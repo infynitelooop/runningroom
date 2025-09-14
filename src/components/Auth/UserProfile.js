@@ -344,7 +344,7 @@ const UserProfile = () => {
                   <h1 className="font-semibold text-md text-slate-800">
                     Role :{" "}
                     <span className=" text-slate-700  font-normal">
-                      {currentUser && currentUser["roles"][0]}
+                      {currentUser && currentUser.roles.map(role => role.replace(/^ROLE_/, "")).join(" | ")}
                     </span>
                   </h1>
                 </div>

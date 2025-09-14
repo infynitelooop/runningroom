@@ -1,10 +1,11 @@
 import React from "react";
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { FaArrowLeft, FaArrowRight, FaDoorOpen } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 import { LiaBlogSolid } from "react-icons/lia";
-import { FaUser } from "react-icons/fa";
+import { FaUser} from "react-icons/fa";
 import Tooltip from "@mui/material/Tooltip";
 import { useMyContext } from "../../store/ContextApi";
+
 
 const Sidebar = () => {
   // Access the openSidebar and setOpenSidebar function using the useMyContext hook from the ContextProvider
@@ -66,6 +67,29 @@ const Sidebar = () => {
             </span>
           </Link>
         </Tooltip>
+
+        <Tooltip title={`${openSidebar ? "" : "Rooms"}`}>
+          <Link
+            to="/admin/rooms"
+            className={`flex text-white items-center gap-2 ${
+              pathName.startsWith("/admin/rooms")
+                ? "bg-btnColor"
+                : "bg-transparent"
+            }   min-h-10 max-h-10 py-2 px-2 rounded-md hover:bg-btnColor`}
+          >
+            <span>
+              <FaDoorOpen />
+            </span>
+            <span
+              className={` ${
+                !openSidebar ? "opacity-0" : ""
+              } transition-all font-semibold duration-150  ease-in-out`}
+            >
+              Rooms
+            </span>
+          </Link>
+        </Tooltip>
+
         <Tooltip title={`${openSidebar ? "" : "Audit Logs"}`}>
           <Link
             to="/admin/audit-logs"

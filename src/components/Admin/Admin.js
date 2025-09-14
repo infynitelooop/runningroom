@@ -6,6 +6,7 @@ import UserDetails from "./UserDetails";
 import { useMyContext } from "../../store/ContextApi";
 import AuditLogsDetails from "./AuditLogsDetails";
 import AdminAuditLogs from "./AdminAuditLogs";
+import RoomList from "../RunningRoom/Room/RoomList";
 
 const Admin = () => {
   // Access the openSidebar hook using the useMyContext hook from the ContextProvider
@@ -23,6 +24,7 @@ const Admin = () => {
           <Route path="audit-logs/:noteId" element={<AuditLogsDetails />} />
           <Route path="users" element={<UserList />} />
           <Route path="users/:userId" element={<UserDetails />} />
+          <Route path="rooms" element={<RoomList />} />
           {/* Add other routes as necessary */}
         </Routes>
       </div>
