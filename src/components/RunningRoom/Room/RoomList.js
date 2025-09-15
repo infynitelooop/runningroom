@@ -7,7 +7,6 @@ import Errors from "../../Errors.js";
 import { FaDoorOpen } from "react-icons/fa";
 import { FiRefreshCw } from "react-icons/fi"; // Feather icons
 import { MdOutlineCategory, MdOutlinePeopleAlt } from "react-icons/md";
-import { BiSolidUserCheck } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 

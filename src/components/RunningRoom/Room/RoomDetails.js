@@ -30,10 +30,19 @@ const RoomDetails = () => {
     const [room, setRoom] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [updateError, setUpdateError] = useState(null);
     const [saving, setSaving] = useState(false);
+    const [successMessage, setSuccessMessage] = useState(null);
+
+    const resetStatesAndStartLoading = () => {
+        setError(null);
+        setUpdateError(null);
+        setSuccessMessage(null);
+    };
+
 
     const fetchRoomDetails = useCallback(async () => {
-        setLoading(true);
+        //resetStatesAndStartLoading();
         try {
             const response = await api.get(`/rooms/${roomId}`);
             setRoom(response.data);
@@ -58,17 +67,21 @@ const RoomDetails = () => {
 
     const handleSave = async (data) => {
         setSaving(true);
+        resetStatesAndStartLoading();
         try {
             await api.put(`/rooms`, data);
+            setSuccessMessage("Room updated successfully");
             toast.success("Room updated successfully");
             fetchRoomDetails(); // refresh data
         } catch (err) {
-            toast.error(err?.response?.data?.message || "Failed to update room");
+            setUpdateError(err?.response?.data?.message || "Failed to update room"); // store for display
             console.error("Error updating room:", err);
         } finally {
             setSaving(false);
         }
     };
+
+
 
     if (error) {
         return <Errors message={error} />;
@@ -88,6 +101,18 @@ const RoomDetails = () => {
                             Room Details
                             <hr />
                         </h1>
+
+                        {updateError && (
+                            <div className="bg-red-100  text-red-700 px-4 py-2 rounded relative mb-4">
+                                {updateError}
+                            </div>
+                        )}
+
+                        {successMessage && (
+                            <div className="bg-green-100  text-green-700 px-4 py-2 rounded relative mb-4">
+                                {successMessage}
+                            </div>
+                        )}
 
                         <form
                             className="flex flex-col gap-4"
