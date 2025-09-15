@@ -23,16 +23,16 @@ const InputField = ({
         type={type}
         id={id}
         placeholder={placeholder}
-        className={` px-2 py-2 border  ${
-          autoFocus ? "border-2" : ""
-        }   outline-none bg-transparent  text-slate-700 rounded-md ${
-          errors[id]?.message ? "border-red-500" : "border-slate-700"
-        }`}
+        className={` px-2 py-2 border  ${autoFocus ? "border-2" : ""
+          } outline-none bg-transparent text-slate-700 rounded-md ${errors[id]?.message ? "border-red-500" : "border-slate-700"
+          }`}
         {...register(id, {
           required: { value: required, message },
           minLength: min
-            ? { value: min, message: "Minimum 6 character is required" }
-            : null,
+            ? { value: min, message: `Minimum ${min} characters required` }
+            : undefined,
+          min: id === "capacity" ? { value: 1, message: "Capacity cannot be less than 1" } : undefined,
+          max: id === "capacity" ? { value: 10, message: "Capacity cannot be greater than 10" } : undefined,
         })}
         readOnly={readOnly}
       />
