@@ -9,6 +9,7 @@ import { FiRefreshCw } from "react-icons/fi"; // Feather icons
 import { MdOutlineCategory, MdOutlinePeopleAlt } from "react-icons/md";
 import { BiSolidUserCheck } from "react-icons/bi";
 import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 // Helper: format enum values
 const formatEnum = (value) => {
@@ -88,22 +89,6 @@ const roomListColumns = [
         ),
     },
     {
-        field: "tenantId",
-        headerName: "Tenant ID",
-        minWidth: 200,
-        headerAlign: "center",
-        align: "center",
-        sortable: false,
-        headerClassName: "text-black font-semibold border",
-        cellClassName: "text-slate-700 font-normal border",
-        renderCell: (params) => (
-            <div className="flex items-center justify-center gap-1">
-                <BiSolidUserCheck className="text-slate-700 text-lg" />
-                <span>{params.row.tenantId || "-"}</span>
-            </div>
-        ),
-    },
-    {
         field: "action",
         headerName: "Action",
         width: 180,
@@ -127,6 +112,7 @@ const roomListColumns = [
 ];
 
 const RoomList = () => {
+    const location = useLocation();
     const [allRooms, setAllRooms] = useState([]); // full original list
     const [rooms, setRooms] = useState([]);       // filtered/displayed
     const [searchText, setSearchText] = useState("");
@@ -149,7 +135,7 @@ const RoomList = () => {
             }
         };
         fetchRooms();
-    }, []);
+    }, [location.key]);
 
     // Prepare rows for DataGrid
     const rows = rooms.map((room) => ({
@@ -158,7 +144,7 @@ const RoomList = () => {
         roomType: room.roomType,
         capacity: room.capacity,
         status: room.status,
-        tenantId: room.tenantId,
+        tenantId: room.tenantId
     }));
 
     if (error) return <Errors message={error} />;
