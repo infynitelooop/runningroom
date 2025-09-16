@@ -1,94 +1,146 @@
 import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import api from "../../../services/api";
+import InputField from "../../InputField/InputField";
 
-export default function CreateRoom({ onRoomCreated }) {
-  const [roomName, setRoomName] = useState("");
-  const [capacity, setCapacity] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+import Buttons from "../../../utils/Buttons";
+import toast from "react-hot-toast";
+import { RoomStatus, RoomType } from "../enum";
+import { useNavigate } from "react-router-dom";
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(null);
-
-    if (!roomName.trim() || !capacity) {
-      setError("Please fill in all fields.");
-      return;
-    }
-
-    try {
-      setLoading(true);
-
-      // Replace with your backend endpoint
-      const response = await fetch("/api/rooms", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+const NewRoom = () => {
+    const navigate = useNavigate();
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({
+        defaultValues: {
+            roomNumber: "",
+            roomType: RoomType[0],
+            capacity: "",
+            status: RoomStatus[0],
         },
-        body: JSON.stringify({ name: roomName, capacity: Number(capacity) }),
-      });
+        mode: "onSubmit",
+    });
 
-      if (!response.ok) {
-        throw new Error("Failed to create room");
-      }
+    const [saving, setSaving] = useState(false);
+    const [error, setError] = useState(null);
+    const [successMessage, setSuccessMessage] = useState(null);
 
-      const newRoom = await response.json();
+    const handleSave = async (data) => {
+        setSaving(true);
+        setError(null);
+        setSuccessMessage(null);
 
-      // Reset form
-      setRoomName("");
-      setCapacity("");
+        try {
+            await api.post("/rooms", data);
+            setSuccessMessage("Room created successfully");
+            toast.success("Room created successfully");
+            // Optional: redirect to room list after creation
+            navigate("/admin/rooms");
+        } catch (err) {
+            setError(err?.response?.data?.message || "Failed to create room");
+            console.error("Error creating room:", err);
+        } finally {
+            setSaving(false);
+        }
+    };
 
-      // Notify parent
-      if (onRoomCreated) {
-        onRoomCreated(newRoom);
-      }
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+    return (
+        <div className="sm:px-12 px-4 py-10">
+            <div className="lg:w-[70%] sm:w-[90%] w-full mx-auto shadow-lg shadow-gray-300 p-8 rounded-md">
+                <h1 className="text-slate-800 text-2xl font-bold pb-4">
+                    Create New Room
+                    <hr />
+                </h1>
 
-  return (
-    <div className="max-w-md mx-auto bg-white shadow-lg rounded-2xl p-6">
-      <h2 className="text-xl font-semibold mb-4">Create a New Room</h2>
+                {error && (
+                    <div className="bg-red-100 text-red-700 px-4 py-2 rounded relative mb-4">
+                        {error}
+                    </div>
+                )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Room Name
-          </label>
-          <input
-            type="text"
-            value={roomName}
-            onChange={(e) => setRoomName(e.target.value)}
-            className="mt-1 block w-full border rounded-lg p-2 focus:ring focus:ring-blue-300"
-            placeholder="Enter room name"
-          />
+                {successMessage && (
+                    <div className="bg-green-100 text-green-700 px-4 py-2 rounded relative mb-4">
+                        {successMessage}
+                    </div>
+                )}
+
+                <form
+                    className="flex flex-col gap-4"
+                    onSubmit={handleSubmit(handleSave)}
+                >
+                    <InputField
+                        label="Room Number"
+                        id="roomNumber"
+                        type="text"
+                        placeholder="Enter Room Number"
+                        required
+                        register={register}
+                        errors={errors}
+                        message="*Room number is required"
+                    />
+
+                    <div>
+                        <label className="block text-slate-700 font-semibold pb-1">
+                            Room Type
+                        </label>
+                        <select
+                            {...register("roomType", { required: "*Room type is required" })}
+                            className="border p-2 rounded w-full"
+                        >
+                            {RoomType.map((type) => (
+                                <option key={type} value={type}>
+                                    {type}
+                                </option>
+                            ))}
+                        </select>
+                        {errors.roomType && (
+                            <p className="text-red-500 text-sm">{errors.roomType.message}</p>
+                        )}
+                    </div>
+
+                    <InputField
+                        label="Capacity"
+                        id="capacity"
+                        type="number"
+                        placeholder="Enter Capacity"
+                        register={register}
+                        errors={errors}
+                        required={true}
+                        message="*Capacity is required"
+                    />
+
+                    <div>
+                        <label className="block text-slate-700 font-semibold pb-1">
+                            Status
+                        </label>
+                        <select
+                            {...register("status", { required: "*Status is required" })}
+                            className="border p-2 rounded w-full"
+                        >
+                            {RoomStatus.map((status) => (
+                                <option key={status} value={status}>
+                                    {status}
+                                </option>
+                            ))}
+                        </select>
+                        {errors.status && (
+                            <p className="text-red-500 text-sm">{errors.status.message}</p>
+                        )}
+                    </div>
+
+                    <Buttons
+                        type="submit"
+                        className="bg-btnColor mb-0 w-fit px-4 py-2 rounded-md text-white"
+                    >
+                        {saving ? "Saving..." : "Create Room"}
+                    </Buttons>
+                </form>
+            </div>
         </div>
+    );
+};
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Capacity
-          </label>
-          <input
-            type="number"
-            value={capacity}
-            onChange={(e) => setCapacity(e.target.value)}
-            className="mt-1 block w-full border rounded-lg p-2 focus:ring focus:ring-blue-300"
-            placeholder="Enter capacity"
-          />
-        </div>
-
-        {error && <p className="text-red-600 text-sm">{error}</p>}
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
-        >
-          {loading ? "Creating..." : "Create Room"}
-        </button>
-      </form>
-    </div>
-  );
-}
+export default NewRoom;
