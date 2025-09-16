@@ -31,20 +31,26 @@ const Signup = () => {
       username: "",
       email: "",
       password: "",
+      firstName: "",
+      lastName: "",
+      phone: "",
     },
     mode: "onTouched",
   });
 
   useEffect(() => {
-    setRole("ROLE_USER");
+    setRole("ROLE_CREW");
   }, []);
 
   const onSubmitHandler = async (data) => {
-    const { username, email, password } = data;
+    const { username, email, password, firstName, lastName, phone } = data;
     const sendData = {
       username,
       email,
       password,
+      firstName,
+      lastName,
+      phone,
       role: [role],
     };
 
@@ -54,7 +60,7 @@ const Signup = () => {
       toast.success("Reagister Successful");
       reset();
       if (response.data) {
-        navigate("/login");
+        navigate("/registration-success"); 
       }
     } catch (error) {
       // Add an error programmatically by using the setError function provided by react-hook-form
@@ -152,10 +158,47 @@ const Signup = () => {
             errors={errors}
             min={6}
           />
+
+          <InputField
+            label="First Name"
+            required
+            id="firstName"
+            type="text"
+            message="*First name is required"
+            placeholder="Type your first name"
+            register={register}
+            errors={errors}
+          />
+
+          <InputField
+            label="Last Name"
+            required
+            id="lastName"
+            type="text"
+            message="*Last name is required"
+            placeholder="Type your last name"
+            register={register}
+            errors={errors}
+          />
+
+          <InputField
+            label="Phone Number"
+            required
+            id="phone"
+            type="text"
+            message="*Phone number is required"
+            placeholder="10-digit phone number"
+            register={register}
+            errors={errors}
+            min={10}
+            pattern={{ value: /^[0-9]{10}$/, message: "Phone number must contain only digits" }}
+          />
+
+
         </div>
         <Buttons
           disabled={loading}
-          onClickhandler={() => {}}
+          onClickhandler={() => { }}
           className="bg-customRed font-semibold flex justify-center text-white w-full py-2 hover:text-slate-400 transition-colors duration-100 rounded-sm my-3"
           type="text"
         >

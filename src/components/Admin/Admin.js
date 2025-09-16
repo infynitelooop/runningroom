@@ -28,6 +28,7 @@ const Admin = () => {
           <Route path="rooms" element={<RoomList />} />
           <Route path="rooms/new" element={<CreateRoom />} />
           <Route path="rooms/edit/:roomId" element={<RoomDetails />} />
+
           {/* Add other routes as necessary */}
         </Routes>
       </div>

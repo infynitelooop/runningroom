@@ -19,6 +19,7 @@ import ContactPage from "./components/contactPage/ContactPage";
 import AboutPage from "./components/aboutPage/AboutPage";
 import ResetPassword from "./components/Auth/ResetPassword";
 import Footer from "./components/Footer/Footer";
+import RegistrationSuccess from "./components/Auth/RegistrationSuccess";
 
 const App = () => {
   return (
@@ -29,6 +30,7 @@ const App = () => {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/registration-success" element={<RegistrationSuccess />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/about" element={<AboutPage />} />

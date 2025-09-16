@@ -12,6 +12,7 @@ const InputField = ({
   autoFocus,
   placeholder,
   readOnly,
+  pattern,
 }) => {
   return (
     <div className={`flex flex-col gap-1 ${className}`}>
@@ -36,6 +37,8 @@ const InputField = ({
 
           max: id === "capacity" ? { value: 10, message: "Capacity cannot be greater than 10" } :
             id === "floor" ? { value: 100, message: "Floor cannot be greater than 10" } : undefined,
+
+          pattern: pattern,
 
         })}
         readOnly={readOnly}
