@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { Blocks } from "react-loader-spinner";
 import Errors from "../../Errors.js";
 import { FaDoorOpen } from "react-icons/fa";
+import { IoMdAdd } from "react-icons/io";
 import { FiRefreshCw } from "react-icons/fi"; // Feather icons
 import { MdOutlineCategory, MdOutlinePeopleAlt } from "react-icons/md";
 import { Link } from "react-router-dom";
@@ -79,8 +80,8 @@ const roomListColumns = [
         renderCell: (params) => (
             <span
                 className={`px-2 py-1 rounded-md ${params.row.status === "AVAILABLE"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-red-100 text-red-700"
+                    ? "bg-green-100 text-green-700"
+                    : "bg-red-100 text-red-700"
                     }`}
             >
                 {formatEnum(params.row.status)}
@@ -99,7 +100,7 @@ const roomListColumns = [
         cellClassName: "text-slate-700 font-normal border",
         renderCell: (params) => (
             <Link
-                to={`/admin/rooms/${params.id}`}
+                to={`/admin/rooms/edit/${params.id}`}
                 className="h-full flex items-center justify-center"
             >
                 <button className="bg-btnColor text-white px-4 flex justify-center items-center h-9 rounded-md">
@@ -175,6 +176,7 @@ const RoomList = () => {
                 />
 
                 <button
+                    title="Refresh"
                     className="bg-gray-200 text-gray-800 px-4 rounded hover:bg-gray-300"
                     onClick={() => {
                         setSearchText("");
@@ -183,7 +185,13 @@ const RoomList = () => {
                 >
                     <FiRefreshCw className="h-5 w-5" />
                 </button>
-
+                <Link to="/admin/rooms/new" className="ml-auto">
+                    <button 
+                    title="Add new room"
+                    className="bg-btnColor text-white px-4 flex justify-center items-center h-11 rounded-md">
+                        <IoMdAdd className="h-5 w-5" />                        
+                    </button>
+                </Link>
 
             </div>
 

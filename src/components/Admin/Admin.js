@@ -8,6 +8,7 @@ import AuditLogsDetails from "./AuditLogsDetails";
 import AdminAuditLogs from "./AdminAuditLogs";
 import RoomList from "../RunningRoom/Room/RoomList";
 import RoomDetails from "../RunningRoom/Room/RoomDetails";
+import CreateRoom from "../RunningRoom/Room/CreateRoom";
 
 const Admin = () => {
   // Access the openSidebar hook using the useMyContext hook from the ContextProvider
@@ -16,9 +17,8 @@ const Admin = () => {
     <div className="flex">
       <AdminSidebar />
       <div
-        className={`transition-all overflow-hidden flex-1 duration-150 w-full min-h-[calc(100vh-74px)] ${
-          openSidebar ? "lg:ml-52 ml-12" : "ml-12"
-        }`}
+        className={`transition-all overflow-hidden flex-1 duration-150 w-full min-h-[calc(100vh-74px)] ${openSidebar ? "lg:ml-52 ml-12" : "ml-12"
+          }`}
       >
         <Routes>
           <Route path="audit-logs" element={<AdminAuditLogs />} />
@@ -26,7 +26,9 @@ const Admin = () => {
           <Route path="users" element={<UserList />} />
           <Route path="users/:userId" element={<UserDetails />} />
           <Route path="rooms" element={<RoomList />} />
-          <Route path="rooms/:roomId" element={<RoomDetails />} />
+          <Route path="rooms/new" element={<CreateRoom />} />
+          <Route path="rooms/edit/:roomId" element={<RoomDetails />} />
+
           {/* Add other routes as necessary */}
         </Routes>
       </div>
