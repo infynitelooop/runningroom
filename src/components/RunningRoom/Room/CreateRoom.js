@@ -19,6 +19,7 @@ const NewRoom = () => {
             roomNumber: "",
             roomType: RoomType[0],
             capacity: "",
+            floor: "",
             status: RoomStatus[0],
         },
         mode: "onSubmit",
@@ -110,6 +111,17 @@ const NewRoom = () => {
                         errors={errors}
                         required={true}
                         message="*Capacity is required"
+                    />
+
+                    <InputField
+                        label="Floor"
+                        id="floor"
+                        type="number"
+                        placeholder="Enter Floor"
+                        register={register}
+                        errors={errors}
+                        required={true}
+                        message="*Floor is required"
                     />
 
                     <div>

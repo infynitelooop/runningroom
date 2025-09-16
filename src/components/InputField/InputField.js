@@ -31,8 +31,12 @@ const InputField = ({
           minLength: min
             ? { value: min, message: `Minimum ${min} characters required` }
             : undefined,
-          min: id === "capacity" ? { value: 1, message: "Capacity cannot be less than 1" } : undefined,
-          max: id === "capacity" ? { value: 10, message: "Capacity cannot be greater than 10" } : undefined,
+          min: id === "capacity" ? { value: 0, message: "Capacity cannot be negative" } :
+            id === "floor" ? { value: 0, message: "Floor cannot be negative" } : undefined,
+
+          max: id === "capacity" ? { value: 10, message: "Capacity cannot be greater than 10" } :
+            id === "floor" ? { value: 100, message: "Floor cannot be greater than 10" } : undefined,
+
         })}
         readOnly={readOnly}
       />

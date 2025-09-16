@@ -4,13 +4,11 @@ import { DataGrid } from "@mui/x-data-grid";
 import toast from "react-hot-toast";
 import { Blocks } from "react-loader-spinner";
 import Errors from "../../Errors.js";
-import { FaDoorOpen } from "react-icons/fa";
 import { IoMdAdd } from "react-icons/io";
 import { FiRefreshCw } from "react-icons/fi"; // Feather icons
-import { MdOutlineCategory, MdOutlinePeopleAlt } from "react-icons/md";
+import { MdOutlinePeopleAlt } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-
 // Helper: format enum values
 const formatEnum = (value) => {
     if (!value) return "-";
@@ -30,8 +28,7 @@ const roomListColumns = [
         headerClassName: "text-black font-semibold border",
         cellClassName: "text-slate-700 font-normal border",
         renderCell: (params) => (
-            <div className="flex items-center justify-center gap-1">
-                <FaDoorOpen className="text-slate-700 text-lg" />
+            <div className="flex items-center justify-center gap-1">               
                 <span>{params.row.roomNumber}</span>
             </div>
         ),
@@ -47,7 +44,6 @@ const roomListColumns = [
         cellClassName: "text-slate-700 font-normal border",
         renderCell: (params) => (
             <div className="flex items-center justify-center gap-1">
-                <MdOutlineCategory className="text-slate-700 text-lg" />
                 <span>{formatEnum(params.row.roomType)}</span>
             </div>
         ),
@@ -65,6 +61,21 @@ const roomListColumns = [
             <div className="flex items-center justify-center gap-1">
                 <MdOutlinePeopleAlt className="text-slate-700 text-lg" />
                 <span>{params.row.capacity}</span>
+            </div>
+        ),
+    },
+        {
+        field: "floor",
+        headerName: "Floor",
+        minWidth: 140,
+        headerAlign: "center",
+        align: "center",
+        sortable: true,
+        headerClassName: "text-black font-semibold border",
+        cellClassName: "text-slate-700 font-normal border",
+        renderCell: (params) => (
+            <div className="flex items-center justify-center gap-1">
+                <span>{params.row.floor}</span>
             </div>
         ),
     },
@@ -143,6 +154,7 @@ const RoomList = () => {
         roomNumber: room.roomNumber,
         roomType: room.roomType,
         capacity: room.capacity,
+        floor: room.floor,
         status: room.status,
         tenantId: room.tenantId
     }));
