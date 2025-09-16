@@ -8,6 +8,9 @@ import Buttons from "../../../utils/Buttons";
 import toast from "react-hot-toast";
 import Errors from "../../Errors";
 import { RoomStatus, RoomType } from "../enum";
+import { useNavigate } from "react-router-dom";
+import { FaTrash } from "react-icons/fa";
+
 
 const RoomDetails = () => {
     const {
@@ -32,7 +35,9 @@ const RoomDetails = () => {
     const [error, setError] = useState(null);
     const [updateError, setUpdateError] = useState(null);
     const [saving, setSaving] = useState(false);
+    const [deleting, setDeleting] = useState(false);
     const [successMessage, setSuccessMessage] = useState(null);
+    const navigate = useNavigate();
 
     const resetStatesAndStartLoading = () => {
         setError(null);
@@ -81,7 +86,21 @@ const RoomDetails = () => {
         }
     };
 
+    const handleDelete = async () => {
+        if (!window.confirm("Are you sure you want to delete this room?")) return;
 
+        try {
+            setDeleting(true);
+            await api.delete(`/rooms/${roomId}`);
+            toast.success("Room deleted successfully");
+            navigate("/admin/rooms");
+        } catch (err) {
+            setUpdateError(err?.response?.data?.message || "Failed to delete room");
+            console.error("Error deleting room:", err);
+        } finally {
+            setDeleting(false);
+        }
+    };
 
     if (error) {
         return <Errors message={error} />;
@@ -156,8 +175,19 @@ const RoomDetails = () => {
                                 placeholder="Enter Capacity"
                                 register={register}
                                 errors={errors}
+                                message="*Capacity is required"
                             />
 
+                              <InputField
+                                label="Floor"
+                                required
+                                id="floor"
+                                type="number"
+                                placeholder="Enter Floor"
+                                register={register}
+                                errors={errors}
+                                message="*Floor is required"
+                            />
                             <div>
                                 <label className="block text-slate-700 font-semibold pb-1">
                                     Status
@@ -176,13 +206,22 @@ const RoomDetails = () => {
                                     <p className="text-red-500 text-sm">{errors.status.message}</p>
                                 )}
                             </div>
+                            <div className="flex gap-2 mt-4">
+                                <Buttons
+                                    type="submit"
+                                    className="bg-btnColor mb-0 w-fit px-4 py-2 rounded-md text-white"
+                                >
+                                    {saving ? "Saving..." : "Save Changes"}
+                                </Buttons>
 
-                            <Buttons
-                                type="submit"
-                                className="bg-btnColor mb-0 w-fit px-4 py-2 rounded-md text-white"
-                            >
-                                {saving ? "Saving..." : "Save Changes"}
-                            </Buttons>
+                                <Buttons
+                                    type="button"
+                                    className="bg-red-500 hover:bg-red-600 mb-0 w-fit px-4 py-2 rounded-md text-white"
+                                    onClick={handleDelete}
+                                >
+                                    {deleting ? "Deleting..." : <FaTrash className="h-5 w-5" />}
+                                </Buttons>
+                            </div>
                         </form>
                     </div>
                 )
