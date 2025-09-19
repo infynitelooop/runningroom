@@ -60,7 +60,7 @@ const Signup = () => {
       toast.success("Reagister Successful");
       reset();
       if (response.data) {
-        navigate("/registration-success"); 
+        navigate("/login");
       }
     } catch (error) {
       // Add an error programmatically by using the setError function provided by react-hook-form

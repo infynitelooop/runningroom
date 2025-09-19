@@ -9,6 +9,10 @@ import { FiRefreshCw } from "react-icons/fi"; // Feather icons
 import { MdOutlinePeopleAlt } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import Tooltip from "@mui/material/Tooltip";
+
+
+
 // Helper: format enum values
 const formatEnum = (value) => {
     if (!value) return "-";
@@ -20,23 +24,23 @@ const formatEnum = (value) => {
 const roomListColumns = [
     {
         field: "roomNumber",
-        headerName: "Room Number",
-        minWidth: 180,
+        headerName: "Room No.",
+        minWidth: 100,
         headerAlign: "center",
         align: "center",
         sortable: true,
         headerClassName: "text-black font-semibold border",
         cellClassName: "text-slate-700 font-normal border",
         renderCell: (params) => (
-            <div className="flex items-center justify-center gap-1">               
+            <div className="flex items-center justify-center gap-1">
                 <span>{params.row.roomNumber}</span>
             </div>
         ),
     },
     {
         field: "roomType",
-        headerName: "Room Type",
-        minWidth: 180,
+        headerName: "Type",
+        minWidth: 100,
         headerAlign: "center",
         align: "center",
         sortable: true,
@@ -49,9 +53,24 @@ const roomListColumns = [
         ),
     },
     {
+        field: "ac",
+        headerName: "AC",
+        minWidth: 10,
+        headerAlign: "center",
+        align: "center",
+        sortable: true,
+        headerClassName: "text-black font-semibold border",
+        cellClassName: "text-slate-700 font-normal border",
+        renderCell: (params) => (
+            <div className="flex items-center justify-center gap-1">
+                <span>{params.row.ac ? "Yes" : "No"}</span>
+            </div>
+        ),
+    },
+    {
         field: "capacity",
         headerName: "Capacity",
-        minWidth: 140,
+        minWidth: 100,
         headerAlign: "center",
         align: "center",
         sortable: true,
@@ -64,10 +83,10 @@ const roomListColumns = [
             </div>
         ),
     },
-        {
+    {
         field: "floor",
         headerName: "Floor",
-        minWidth: 140,
+        minWidth: 100,
         headerAlign: "center",
         align: "center",
         sortable: true,
@@ -80,15 +99,91 @@ const roomListColumns = [
         ),
     },
     {
-        field: "status",
-        headerName: "Status",
-        minWidth: 160,
+        field: "building",
+        headerName: "Building",
+        minWidth: 100,
         headerAlign: "center",
         align: "center",
         sortable: true,
         headerClassName: "text-black font-semibold border",
         cellClassName: "text-slate-700 font-normal border",
         renderCell: (params) => (
+            <div className="flex items-center justify-center gap-1">
+                <span>{params.row.building || "-"}</span>
+            </div>
+        ),
+    },
+    {
+        field: "crewType",
+        headerName: "Crew Type",
+        minWidth: 100,
+        headerAlign: "center",
+        align: "center",
+        sortable: true,
+        headerClassName: "text-black font-semibold border",
+        cellClassName: "text-slate-700 font-normal border",
+        renderCell: (params) => (
+            <div className="flex items-center justify-center gap-1">
+                <span>{params.row.crewType ? formatEnum(params.row.crewType) : "-"}</span>
+            </div>
+        ),
+    },
+    {
+        field: "category",
+        headerName: "Category",
+        minWidth: 100,
+        headerAlign: "center",
+        align: "center",
+        sortable: true,
+        headerClassName: "text-black font-semibold border",
+        cellClassName: "text-slate-700 font-normal border",
+        renderCell: (params) => (
+            <div className="flex items-center justify-center gap-1">
+                <span>{params.row.category ? formatEnum(params.row.category) : "-"}</span>
+            </div>
+        ),
+    },
+    {
+        field: "beds",
+        headerName: "Beds",
+        minWidth: 50,
+        headerAlign: "center",
+        align: "center",
+        sortable: true,
+        headerClassName: "text-black font-semibold border",
+        cellClassName: "text-slate-700 font-normal border",
+        renderCell: (params) => (
+            <div className="flex items-center justify-center gap-1">
+                <span>{params.row.beds}</span>
+            </div>
+        ),
+    },
+    {
+        field: "attachment",
+        headerName: "Attachment",
+        minWidth: 10,
+        headerAlign: "center",
+        align: "center",
+        sortable: true,
+        headerClassName: "text-black font-semibold border",
+        cellClassName: "text-slate-700 font-normal border",
+        renderCell: (params) => (
+            <div className="flex items-center justify-center gap-1">
+                <span>{params.row.attachment}</span>
+            </div>
+        ),
+    },
+    {
+        field: "status",
+        headerName: "Status",
+        minWidth: 100,
+        headerAlign: "center",
+        align: "center",
+        sortable: true,
+        headerClassName: "text-black font-semibold border",
+        cellClassName: "text-slate-700 font-normal border",
+        renderCell: (params) => (
+            <Tooltip title={`Room is ${formatEnum(params.row.status)}`} arrow>
             <span
                 className={`px-2 py-1 rounded-md ${params.row.status === "AVAILABLE"
                     ? "bg-green-100 text-green-700"
@@ -97,12 +192,13 @@ const roomListColumns = [
             >
                 {formatEnum(params.row.status)}
             </span>
+            </Tooltip>
         ),
     },
     {
         field: "action",
         headerName: "Action",
-        width: 180,
+        width: 100,
         headerAlign: "center",
         align: "center",
         editable: false,
@@ -153,8 +249,15 @@ const RoomList = () => {
         id: room.id,
         roomNumber: room.roomNumber,
         roomType: room.roomType,
+        ac: room.ac,
         capacity: room.capacity,
         floor: room.floor,
+        building: room.buildingName,
+        discription: room.description,
+        crewType: room.crewType,
+        category: room.roomCategory,
+        attachment: room.attachment,
+        beds: room.beds,
         status: room.status,
         tenantId: room.tenantId
     }));
@@ -198,10 +301,10 @@ const RoomList = () => {
                     <FiRefreshCw className="h-5 w-5" />
                 </button>
                 <Link to="/admin/rooms/new" className="ml-auto">
-                    <button 
-                    title="Add new room"
-                    className="bg-btnColor text-white px-4 flex justify-center items-center h-11 rounded-md">
-                        <IoMdAdd className="h-5 w-5" />                        
+                    <button
+                        title="Add new room"
+                        className="bg-btnColor text-white px-4 flex justify-center items-center h-11 rounded-md">
+                        <IoMdAdd className="h-5 w-5" />
                     </button>
                 </Link>
 
@@ -232,6 +335,12 @@ const RoomList = () => {
                         pageSizeOptions={[6, 10, 20]}
                         sortingOrder={["asc", "desc"]}
                         disableColumnResize
+                        sx={{
+                            "& .MuiDataGrid-columnHeaderTitle": {
+                                fontWeight: "bold",
+                                color: "black",
+                            },
+                        }}
                     />
                 )}
             </div>
