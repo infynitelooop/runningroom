@@ -7,7 +7,7 @@ import { Blocks } from "react-loader-spinner";
 import Buttons from "../../../utils/Buttons";
 import toast from "react-hot-toast";
 import Errors from "../../Errors";
-import { RoomStatus, RoomType } from "../enum";
+import { RoomStatus, RoomType, CrewType, AttachmentType, RoomCategory } from "../enum";
 import { useNavigate } from "react-router-dom";
 import { FaTrash } from "react-icons/fa";
 
@@ -56,8 +56,17 @@ const RoomDetails = () => {
             setValue("roomId", response.data.id);
             setValue("roomNumber", response.data.roomNumber);
             setValue("roomType", response.data.roomType);
+            setValue("ac", response.data.ac);
             setValue("capacity", response.data.capacity);
+            setValue("floor", response.data.floor);
             setValue("status", response.data.status);
+            setValue("buildingName", response.data.buildingName);
+            setValue("crewType", response.data.crewType);
+            setValue("roomCategory", response.data.roomCategory);
+            setValue("beds", response.data.beds);
+            setValue("attachment", response.data.attachment);
+            setValue("status", response.data.status);
+            setValue("discription", response.data.description);
         } catch (err) {
             setError(err?.response?.data?.message || "Error fetching room details");
             console.error("Error fetching room details", err);
@@ -78,8 +87,19 @@ const RoomDetails = () => {
             setSuccessMessage("Room updated successfully");
             toast.success("Room updated successfully");
             fetchRoomDetails(); // refresh data
+            window.scrollTo({ top: 0, behavior: "smooth" }); // scroll to top
         } catch (err) {
-            setUpdateError(err?.response?.data?.message || "Failed to update room"); // store for display
+            const apiError = err?.response?.data;
+
+            if (apiError && Array.isArray(apiError)) {
+                // multiple validation errors
+                const messages = err.response.data.map(e => e.message);
+                setUpdateError(messages); 
+            } else {
+                // single error fallback
+                setUpdateError([apiError?.message || "Failed to update room"]);
+            }
+            window.scrollTo({ top: 0, behavior: "smooth" }); // scroll to error banner
             console.error("Error updating room:", err);
         } finally {
             setSaving(false);
@@ -120,10 +140,13 @@ const RoomDetails = () => {
                             Room Details
                             <hr />
                         </h1>
-
-                        {updateError && (
-                            <div className="bg-red-100  text-red-700 px-4 py-2 rounded relative mb-4">
-                                {updateError}
+                        {updateError && Array.isArray(updateError) && (
+                            <div className="bg-red-100 text-red-700 px-4 py-2 rounded relative mb-4">
+                                <ul className="list-disc pl-5">
+                                    {updateError.map((error, index) => (
+                                        <li key={index}>{error}</li>
+                                    ))}
+                                </ul>
                             </div>
                         )}
 
@@ -137,6 +160,7 @@ const RoomDetails = () => {
                             className="flex flex-col gap-4"
                             onSubmit={handleSubmit(handleSave)}
                         >
+                            {/* Room No */}
                             <InputField
                                 label="Room Number"
                                 id="roomNumber"
@@ -148,6 +172,7 @@ const RoomDetails = () => {
                                 readOnly={true}
                             />
 
+                            {/* Room Type */}
                             <div>
                                 <label className="block text-slate-700 font-semibold pb-1">
                                     Room Type
@@ -167,6 +192,24 @@ const RoomDetails = () => {
                                 )}
                             </div>
 
+                            {/* AC */}
+                            <div>
+                                <label className="block text-slate-700 font-semibold pb-1">
+                                    AC
+                                </label>
+                                <select
+                                    {...register("ac", { required: "*AC is required" })}
+                                    className="border p-2 rounded w-full"
+                                >
+                                    <option value={true}>Yes</option>
+                                    <option value={false}>No</option>
+                                </select>
+                                {errors.ac && (
+                                    <p className="text-red-500 text-sm">{errors.ac.message}</p>
+                                )}
+                            </div>
+
+                            {/* Capacity */}
                             <InputField
                                 label="Capacity"
                                 required
@@ -178,7 +221,8 @@ const RoomDetails = () => {
                                 message="*Capacity is required"
                             />
 
-                              <InputField
+                            {/* Floor */}
+                            <InputField
                                 label="Floor"
                                 required
                                 id="floor"
@@ -188,6 +232,100 @@ const RoomDetails = () => {
                                 errors={errors}
                                 message="*Floor is required"
                             />
+
+                            {/* Building */}
+                            <div>
+                                <label className="block text-slate-700 font-semibold pb-1">
+                                    Building
+                                </label>
+                                <select
+                                    {...register("building", { required: "*Building is required" })}
+                                    className="border p-2 rounded w-full"
+                                >
+                                    {["A", "B", "C", "D"].map((type) => (
+                                        <option key={type} value={type}>
+                                            {type}
+                                        </option>
+                                    ))}
+                                </select>
+                                {errors.building && (
+                                    <p className="text-red-500 text-sm">{errors.building.message}</p>
+                                )}
+                            </div>
+
+                            {/* Crew Type */}
+                            <div>
+                                <label className="block text-slate-700 font-semibold pb-1">
+                                    Crew Type
+                                </label>
+                                <select
+                                    {...register("crewType", { required: "*Room type is required" })}
+                                    className="border p-2 rounded w-full"
+                                >
+                                    {CrewType.map((type) => (
+                                        <option key={type} value={type}>
+                                            {type}
+                                        </option>
+                                    ))}
+                                </select>
+                                {errors.crewType && (
+                                    <p className="text-red-500 text-sm">{errors.roomType.message}</p>
+                                )}
+                            </div>
+
+                            {/* Category */}
+                            <div>
+                                <label className="block text-slate-700 font-semibold pb-1">
+                                    Category
+                                </label>
+                                <select
+                                    {...register("category", { required: "*Room category is required" })}
+                                    className="border p-2 rounded w-full"
+                                >
+                                    {RoomCategory.map((type) => (
+                                        <option key={type} value={type}>
+                                            {type}
+                                        </option>
+                                    ))}
+                                </select>
+                                {errors.category && (
+                                    <p className="text-red-500 text-sm">{errors.category.message}</p>
+                                )}
+                            </div>
+
+                            {/* Beds */}
+                            <InputField
+                                label="Beds"
+                                required
+                                id="beds"
+                                type="number"
+                                placeholder="Enter Floor"
+                                register={register}
+                                errors={errors}
+                                message="*Beds is required"
+                            />
+
+                            {/* Attachment */}
+                            <div>
+                                <label className="block text-slate-700 font-semibold pb-1">
+                                    Attachment
+                                </label>
+                                <select
+                                    {...register("attachment", { required: "*Attachment type is required" })}
+                                    className="border p-2 rounded w-full"
+                                >
+                                    {AttachmentType.map((type) => (
+                                        <option key={type} value={type}>
+                                            {type}
+                                        </option>
+                                    ))}
+                                </select>
+                                {errors.attachment && (
+                                    <p className="text-red-500 text-sm">{errors.attachment.message}</p>
+                                )}
+                            </div>
+
+                            {/* Status */}
                             <div>
                                 <label className="block text-slate-700 font-semibold pb-1">
                                     Status
@@ -206,6 +344,20 @@ const RoomDetails = () => {
                                     <p className="text-red-500 text-sm">{errors.status.message}</p>
                                 )}
                             </div>
+
+                            {/* Description */}
+                            <div>
+                                <label className="block text-slate-700 font-semibold pb-1">
+                                    Description
+                                </label>
+                                <textarea
+                                    className="border p-2 rounded w-full"
+                                    rows={3}
+                                    placeholder="Enter room description"
+                                ></textarea>
+                            </div>
+
+
                             <div className="flex gap-2 mt-4">
                                 <Buttons
                                     type="submit"
