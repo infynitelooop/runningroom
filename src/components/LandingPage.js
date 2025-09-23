@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Buttons from "../utils/Buttons";
+import Buttons from "../utils/Buttons.tsx";
 import { motion } from "framer-motion";
 import Brands from "./LandingPageCom/Brands/Brands";
 import State from "./LandingPageCom/State";

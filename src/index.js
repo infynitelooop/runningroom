@@ -5,7 +5,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 //wrap the entire application by context provider so that we can access value anywhere in our project without any props drellings
 import { ContextProvider } from "./store/ContextApi";
-import { EnumsProvider } from "./store/EnumsContext";
+import { EnumsProvider } from "./store/EnumsContext.tsx";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

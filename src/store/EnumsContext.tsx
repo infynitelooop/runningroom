@@ -1,23 +1,28 @@
-// context/EnumsContext.jsx
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { fetchAllEnums } from "../services/enums";
-import { useMyContext } from "./ContextApi"; // 👈 import your user context
+import { useMyContext } from "./ContextApi";
+import { Enums } from "../types/enums";
 
-const EnumsContext = createContext({
+type EnumsContextType = {
+  enums: Enums | null;
+  loading: boolean;
+};
+
+const EnumsContext = createContext<EnumsContextType>({
   enums: null,
   loading: true,
 });
 
-export const EnumsProvider = ({ children }) => {
-  const [enums, setEnums] = useState(null);
+export const EnumsProvider = ({ children }: { children: ReactNode }) => {
+  const [enums, setEnums] = useState<Enums | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const { currentUser } = useMyContext(); // 👈 get user info
+  const { currentUser } = useMyContext();
 
   useEffect(() => {
-    if (currentUser) {  // ✅ wait until fetchUser finished
+    if (currentUser) {
       fetchAllEnums()
-        .then((data) => {
+        .then((data: Enums) => {
           setEnums(data);
           setLoading(false);
         })
@@ -26,7 +31,7 @@ export const EnumsProvider = ({ children }) => {
           setLoading(false);
         });
     }
-  }, [currentUser]); // runs only after user is fetched
+  }, [currentUser]);
 
   return (
     <EnumsContext.Provider value={{ enums, loading }}>

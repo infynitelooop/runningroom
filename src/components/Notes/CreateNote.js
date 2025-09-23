@@ -4,7 +4,7 @@ import "react-quill/dist/quill.snow.css";
 import { MdNoteAlt } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
-import Buttons from "../../utils/Buttons";
+import Buttons from "../../utils/Buttons.tsx";
 import toast from "react-hot-toast";
 
 const CreateNote = () => {

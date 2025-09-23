@@ -2,9 +2,9 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import api from "../../services/api";
 import { useForm } from "react-hook-form";
-import InputField from "../InputField/InputField";
+import InputField from "../../utils/InputField.tsx"
 import { Blocks } from "react-loader-spinner";
-import Buttons from "../../utils/Buttons";
+import Buttons from "../../utils/Buttons.tsx";
 import toast from "react-hot-toast";
 import Errors from "../Errors";
 
