@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import api from "../../services/api";
 import { useForm } from "react-hook-form";
-import InputField from "../InputField/InputField";
-import Buttons from "../../utils/Buttons";
+import InputField from "../../utils/InputField.tsx";
+import Buttons from "../../utils/Buttons.tsx";
 import { Divider } from "@mui/material";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";

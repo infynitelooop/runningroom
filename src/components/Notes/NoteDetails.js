@@ -7,7 +7,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import moment from "moment";
 import { DataGrid } from "@mui/x-data-grid";
-import Buttons from "../../utils/Buttons";
+import Buttons from "../../utils/Buttons.tsx";
 import Errors from "../Errors";
 import toast from "react-hot-toast";
 import Modals from "../PopModal";

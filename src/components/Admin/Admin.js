@@ -6,9 +6,9 @@ import UserDetails from "./UserDetails";
 import { useMyContext } from "../../store/ContextApi";
 import AuditLogsDetails from "./AuditLogsDetails";
 import AdminAuditLogs from "./AdminAuditLogs";
-import RoomList from "../RunningRoom/Room/RoomList";
-import RoomDetails from "../RunningRoom/Room/RoomDetails";
-import CreateRoom from "../RunningRoom/Room/CreateRoom";
+import RoomList from "../RunningRoom/Room/RoomList.tsx";
+import RoomDetails from "../RunningRoom/Room/RoomDetails.tsx";
+import CreateRoom from "../RunningRoom/Room/CreateRoom.tsx";
 import CreateBuilding from "../RunningRoom/Building/CreateBuilding";
 import BuildingsPage from "../RunningRoom/Building/BuildingsPage.tsx"
 

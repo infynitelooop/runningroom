@@ -3,9 +3,9 @@ import { Link, useSearchParams } from "react-router-dom";
 import api from "../../services/api";
 import { useForm } from "react-hook-form";
 import { Divider } from "@mui/material";
-import InputField from "../InputField/InputField";
+import InputField from "../../utils/InputField.tsx";
 import toast from "react-hot-toast";
-import Buttons from "../../utils/Buttons";
+import Buttons from "../../utils/Buttons.tsx";
 
 const ResetPassword = () => {
   const {
