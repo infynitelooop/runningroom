@@ -9,6 +9,8 @@ import AdminAuditLogs from "./AdminAuditLogs";
 import RoomList from "../RunningRoom/Room/RoomList";
 import RoomDetails from "../RunningRoom/Room/RoomDetails";
 import CreateRoom from "../RunningRoom/Room/CreateRoom";
+import CreateBuilding from "../RunningRoom/Building/CreateBuilding";
+import BuildingsPage from "../RunningRoom/Building/BuildingsPage.tsx"
 
 const Admin = () => {
   // Access the openSidebar hook using the useMyContext hook from the ContextProvider
@@ -28,6 +30,9 @@ const Admin = () => {
           <Route path="rooms" element={<RoomList />} />
           <Route path="rooms/new" element={<CreateRoom />} />
           <Route path="rooms/edit/:roomId" element={<RoomDetails />} />
+
+          <Route path="buildings" element={<BuildingsPage />} />
+          <Route path="buildings/new" element={<CreateBuilding />} />
 
           {/* Add other routes as necessary */}
         </Routes>
