@@ -7,9 +7,9 @@ import { Blocks } from "react-loader-spinner";
 import Buttons from "../../../utils/Buttons";
 import toast from "react-hot-toast";
 import Errors from "../../Errors";
-import { RoomStatus, RoomType, CrewType, AttachmentType, RoomCategory } from "../enum";
 import { useNavigate } from "react-router-dom";
 import { FaTrash } from "react-icons/fa";
+import { useEnums } from "../../../store/EnumsContext";
 
 
 const RoomDetails = () => {
@@ -20,7 +20,7 @@ const RoomDetails = () => {
         formState: { errors },
     } = useForm({
         defaultValues: {
-            roomId: "",
+            id: "",
             roomNumber: "",
             roomType: "",
             capacity: "",
@@ -38,6 +38,7 @@ const RoomDetails = () => {
     const [deleting, setDeleting] = useState(false);
     const [successMessage, setSuccessMessage] = useState(null);
     const navigate = useNavigate();
+    const { enums, enumLoading } = useEnums();
 
     const resetStatesAndStartLoading = () => {
         setError(null);
@@ -47,13 +48,13 @@ const RoomDetails = () => {
 
 
     const fetchRoomDetails = useCallback(async () => {
-        //resetStatesAndStartLoading();
+        resetStatesAndStartLoading();
         try {
             const response = await api.get(`/rooms/${roomId}`);
             setRoom(response.data);
 
             // set values for react-hook-form
-            setValue("roomId", response.data.id);
+            setValue("id", response.data.id);
             setValue("roomNumber", response.data.roomNumber);
             setValue("roomType", response.data.roomType);
             setValue("ac", response.data.ac);
@@ -79,6 +80,8 @@ const RoomDetails = () => {
         fetchRoomDetails();
     }, [fetchRoomDetails]);
 
+    
+
     const handleSave = async (data) => {
         setSaving(true);
         resetStatesAndStartLoading();
@@ -94,7 +97,7 @@ const RoomDetails = () => {
             if (apiError && Array.isArray(apiError)) {
                 // multiple validation errors
                 const messages = err.response.data.map(e => e.message);
-                setUpdateError(messages); 
+                setUpdateError(messages);
             } else {
                 // single error fallback
                 setUpdateError([apiError?.message || "Failed to update room"]);
@@ -125,6 +128,9 @@ const RoomDetails = () => {
     if (error) {
         return <Errors message={error} />;
     }
+
+    if (enumLoading) return <p>Loading enums...</p>;
+    if (!enums) return <p>Failed to load enums</p>;
 
     return (
         <div className="sm:px-12 px-4 py-10">
@@ -181,11 +187,12 @@ const RoomDetails = () => {
                                     {...register("roomType", { required: "*Room type is required" })}
                                     className="border p-2 rounded w-full"
                                 >
-                                    {RoomType.map((type) => (
-                                        <option key={type} value={type}>
-                                            {type}
+                                    {enums.roomTypes.map((rt) => (
+                                        <option key={rt.key} value={rt.key}>
+                                            {rt.label}
                                         </option>
                                     ))}
+
                                 </select>
                                 {errors.roomType && (
                                     <p className="text-red-500 text-sm">{errors.roomType.message}</p>
@@ -262,9 +269,9 @@ const RoomDetails = () => {
                                     {...register("crewType", { required: "*Room type is required" })}
                                     className="border p-2 rounded w-full"
                                 >
-                                    {CrewType.map((type) => (
-                                        <option key={type} value={type}>
-                                            {type}
+                                    {enums.crewTypes.map((rt) => (
+                                        <option key={rt.key} value={rt.key}>
+                                            {rt.label}
                                         </option>
                                     ))}
                                 </select>
@@ -282,11 +289,12 @@ const RoomDetails = () => {
                                     {...register("category", { required: "*Room category is required" })}
                                     className="border p-2 rounded w-full"
                                 >
-                                    {RoomCategory.map((type) => (
-                                        <option key={type} value={type}>
-                                            {type}
+                                    {enums.roomCategory.map((rt) => (
+                                        <option key={rt.key} value={rt.key}>
+                                            {rt.label}
                                         </option>
                                     ))}
+
                                 </select>
                                 {errors.category && (
                                     <p className="text-red-500 text-sm">{errors.category.message}</p>
@@ -314,11 +322,12 @@ const RoomDetails = () => {
                                     {...register("attachment", { required: "*Attachment type is required" })}
                                     className="border p-2 rounded w-full"
                                 >
-                                    {AttachmentType.map((type) => (
-                                        <option key={type} value={type}>
-                                            {type}
+                                    {enums.attachmentType.map((rt) => (
+                                        <option key={rt.key} value={rt.key}>
+                                            {rt.label}
                                         </option>
                                     ))}
+
                                 </select>
                                 {errors.attachment && (
                                     <p className="text-red-500 text-sm">{errors.attachment.message}</p>
@@ -334,9 +343,9 @@ const RoomDetails = () => {
                                     {...register("status", { required: "*Status is required" })}
                                     className="border p-2 rounded w-full"
                                 >
-                                    {RoomStatus.map((status) => (
-                                        <option key={status} value={status}>
-                                            {status}
+                                    {enums.roomStatus.map((rt) => (
+                                        <option key={rt.key} value={rt.key}>
+                                            {rt.label}
                                         </option>
                                     ))}
                                 </select>
