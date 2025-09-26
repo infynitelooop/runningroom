@@ -1,6 +1,6 @@
 // src/components/ui/button.tsx
 import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
+import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/util.ts"
 
 const buttonVariants = cva(
