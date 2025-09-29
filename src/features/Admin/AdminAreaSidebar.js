@@ -6,6 +6,7 @@ import { FaUser } from "react-icons/fa";
 import Tooltip from "@mui/material/Tooltip";
 import { useMyContext } from "../../store/ContextApi";
 import { HiOutlineBuildingLibrary } from "react-icons/hi2";
+import { BiSolidFoodMenu } from "react-icons/bi";
 
 
 
@@ -127,7 +128,7 @@ const Sidebar = () => {
               }   min-h-10 max-h-10 py-2 px-2 rounded-md hover:bg-btnColor`}
           >
             <span>
-              <HiOutlineBuildingLibrary />
+              <BiSolidFoodMenu />
             </span>
             <span
               className={` ${!openSidebar ? "opacity-0" : ""

@@ -1,11 +1,13 @@
 import { useMenusService, Menu, MenuItem } from "./hooks/useMenusService.ts";
 import DailyMenuCard from "./DailyMenuCard.tsx";
-import WeeklyMenu from "./WeeklyMenu.tsx";
+import WeeklyMenuTable from "./WeeklyMenuTable.tsx";
 import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import MenuFormDialog from "./MenuFormDialog.tsx";
 import MenuItemFormDialog from "./MenuItemFormDialog.tsx";
-import { Select,  SelectContent,  SelectItem,  SelectTrigger,  SelectValue, } from "../../../features/ui/select.tsx";
+import { MdSkipPrevious, MdSkipNext } from "react-icons/md";
+
+import isoWeek from "dayjs/plugin/isoWeek";
 
 // Main component for managing menus
 export default function MenusPage() {
@@ -29,9 +31,18 @@ export default function MenusPage() {
   // Fetch menus based on current view and date
   const fetchMenus = async () => {
     try {
+      setMenus([]);
       if (view === "weekly") {
-        const startOfWeek = currentDate.startOf("week").format("YYYY-MM-DD");
-        const endOfWeek = currentDate.endOf("week").format("YYYY-MM-DD");
+
+        dayjs.extend(isoWeek);
+        //const currentDate = dayjs();
+
+        // If today is Sunday, shift back 1 day to Saturday before finding isoWeek start
+        const adjustedDate = currentDate.day() === 0 ? currentDate.subtract(1, "day") : currentDate;
+
+        const startOfWeek = adjustedDate.startOf("isoWeek").format("YYYY-MM-DD");
+        const endOfWeek = adjustedDate.endOf("isoWeek").format("YYYY-MM-DD");
+
         setMenus(await service.fetchWeekly(startOfWeek, endOfWeek));
       } else {
         const today = currentDate.format("YYYY-MM-DD");
@@ -94,51 +105,97 @@ export default function MenusPage() {
     <div className="p-6 space-y-6">
       {/* Controls ... same */}
 
-      {/* View selection dropdown */}
-      <div className="flex items-center gap-4 mb-4">
-        <label htmlFor="menu-view" className="font-semibold">View:</label>
-        <Select value={view} onValueChange={setView}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Select view" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="weekly">Weekly Menu</SelectItem>
-            <SelectItem value="daily">Daily Menu</SelectItem>
-          </SelectContent>
-        </Select>
+      <div className="flex justify-center ">
+        <h1 className="text-center text-2xl font-bold text-slate-800 uppercase">Menu</h1>
+      </div>
+
+      <div className="flex justify-center items-center gap-4 mb-4">
+
+        <label className="flex items-center gap-1 cursor-pointer">
+          <input
+            type="radio"
+            name="menu-view"
+            value="weekly"
+            checked={view === "weekly"}
+            onChange={() => setView("weekly")}
+            className="accent-blue-600"
+          />
+          Weekly
+        </label>
+        <label className="flex items-center gap-1 cursor-pointer">
+          <input
+            type="radio"
+            name="menu-view"
+            value="daily"
+            checked={view === "daily"}
+            onChange={() => setView("daily")}
+            className="accent-blue-600"
+          />
+          Daily
+        </label>
+      </div>
+
+      <div className="flex justify-center items-center gap-4 mb-4">
+        <button
+          className="p-2 rounded hover:bg-gray-200"
+          onClick={() => setCurrentDate(d => view === "weekly" ? d.subtract(1, "week") : d.subtract(1, "day"))}
+          aria-label="Previous"
+        >
+          <MdSkipPrevious className="w-6 h-6" />
+        </button>
+        <span className="font-semibold">
+          {view === "weekly"
+            ? `${currentDate.startOf("isoWeek").format("DD MMM")} - ${currentDate.endOf("isoWeek").format("DD MMM YYYY")}`
+            : currentDate.format("dddd, DD MMM YYYY")}
+        </span>
+        <button
+          className="p-2 rounded hover:bg-gray-200"
+          onClick={() => setCurrentDate(d => view === "weekly" ? d.add(1, "week") : d.add(1, "day"))}
+          aria-label="Next"
+        >
+          <MdSkipNext className="w-6 h-6" />
+        </button>
       </div>
 
       {/* Daily or Weekly view */}
       {view === "daily" ? (
-        <DailyMenuCard
-          menu={menus[0]}
-          onEditMenu={(menu) => {
-            setSelectedMenu(menu);
-            setOpenMenuDialog(true);
-          }}
-          onDeleteMenu={handleDeleteMenu}
-          onAddItem={(menu) => {
-            setSelectedMenu(menu);
-            setOpenItemDialog(true);
-          }}
-          onEditItem={(menu, item) => {
-            setSelectedMenu(menu);
-            setSelectedItem(item);
-            setOpenItemDialog(true);
-          }}
-          onDeleteItem={handleDeleteItem}
-        />
+        menus.length > 0 ? (
+          <div className="flex justify-center">
+            <div className="w-full max-w-md">
+              <DailyMenuCard
+                menu={menus[0]}
+                onEditMenu={(menu) => {
+                  setSelectedMenu(menu);
+                  setOpenMenuDialog(true);
+                }}
+                onDeleteMenu={handleDeleteMenu}
+                onAddItem={(menu) => {
+                  setSelectedMenu(menu);
+                  setOpenItemDialog(true);
+                }}
+                onEditItem={(menu, item) => {
+                  setSelectedMenu(menu);
+                  setSelectedItem(item);
+                  setOpenItemDialog(true);
+                }}
+                onDeleteItem={handleDeleteItem}
+              />
+            </div>
+          </div>
+        ) : null
       ) : (
-        <WeeklyMenu
-          menus={menus}
-          onEditMenu={(menu) => {
-            setSelectedMenu(menu);
-            setOpenMenuDialog(true);
-          }}
-          onDeleteMenu={handleDeleteMenu}
-        />
+        menus.length > 0 ? (
+          <WeeklyMenuTable
+            menus={menus}
+            onEditMenu={(menu) => {
+              setSelectedMenu(menu);
+              setOpenMenuDialog(true);
+            }}
+            onDeleteMenu={handleDeleteMenu}
+          />
+        ) : null
       )}
-      {error && <p className="text-red-500">{error}</p>}
+      {error && <p className="flex justify-center text-red-500">{error}</p>}
 
 
       {/* Menu Form Dialog */}

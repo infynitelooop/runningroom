@@ -54,36 +54,43 @@ export default function DailyMenuCard({
   const mealTypes = Object.keys(grouped);
 
   return (
-    <div className={`rounded-lg shadow-md p-4 ${cardClassName}`}>
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            <div className="text-black font-bold font-sans text-sm underline">
-              <div>{dayjs(menu.menuDate).format("ddd")}</div>
-              <div>{dayjs(menu.menuDate).format("DD-MM-YYYY")}</div>
-            </div>
+    <div className={`rounded-lg shadow-md p-4 w-full h-full ${cardClassName}`}>
+      <Card className="w-full h-full flex flex-col">
+<CardHeader className="rounded-t-lg px-4 py-2">
+  <CardTitle>
+    <div className="flex justify-between items-center font-bold font-sans text-sm w-full">
+      <span>{dayjs(menu.menuDate).format("ddd")}</span>
+      <span>{dayjs(menu.menuDate).format("DD-MM-YYYY")}</span>
+    </div>
+  </CardTitle>
+  <div className="h-px bg-gray-300" />
+</CardHeader>
 
-          </CardTitle>
-        </CardHeader>
 
-
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-2 overflow-hidden">
           {mealTypes.map(meal => (
-            <div key={meal}>
-              <h3 className="font-bold flex justify-between items-center gap-2">
-
-                <span>{meal}</span>
+            <div key={meal} className="min-w-0">
+              <h3 className="font-bold flex justify-between items-start gap-2 truncate">
+                <span className="truncate">{meal}</span>
                 {mealIcons[meal] || ''}
               </h3>
-              <ul className="items-center gap-2 text-gray-500 mb-6"
-                style={{ fontFamily: '"Courier New", Courier, monospace' }}>
+              <ul
+                className="items-center gap-2 text-gray-800 mb-6 break-words"
+                style={{ fontFamily: '"Courier New", Courier, monospace' }}
+              >
                 {grouped[meal].map(item => {
-                  let colorClass = "text-grey-400"; // default VEG
+                  let colorClass = "text-gray-800";
                   if (item.mealCategory === "NON_VEG") colorClass = "text-red-600";
                   return (
-                    <li key={item.id} className="flex justify-between items-center">
-                      <span className={`font-semibold ${colorClass}`}>{item.name}</span>
-                      <span className="ml-2 text-xs text-gray-600">₹{item.price}</span>
+                    <li key={item.id} className="flex justify-between items-start">
+                      <span className={`font-semibold truncate ${colorClass} flex flex-col`}>
+                        <span>{item.name}</span>
+                        <span className="font-normal text-xs text-gray-500">{item.description}</span>
+                      </span>
+
+                      <span className="ml-2 text-xs text-gray-600 whitespace-nowrap">
+                        ₹{item.price}
+                      </span>
                     </li>
                   );
                 })}

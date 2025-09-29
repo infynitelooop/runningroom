@@ -22,7 +22,7 @@ export function useMenusService() {
   };
 
   const fetchDaily = async (date: string) => {
-    const { data } = await api.get(`/menus?date=${date}`);
+    const { data } = await api.get(`/menus/menu-by-date?date=${date}`);
     return data;
   };
 

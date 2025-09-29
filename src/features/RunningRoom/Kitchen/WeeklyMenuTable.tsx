@@ -1,6 +1,9 @@
 import React from "react";
 import dayjs from "dayjs";
 import DailyMenuCard from "./DailyMenuCard.tsx";
+import { useState } from "react";
+import { Button } from "../../ui/button.tsx";
+
 
 
 type MenuItem = {
@@ -33,7 +36,7 @@ const CARD_COLORS = [
   "bg-yellow-50",
   "bg-orange-50",
   "bg-purple-50",
-  
+
 ];
 
 export default function WeeklyMenuTable({
@@ -45,29 +48,24 @@ export default function WeeklyMenuTable({
     dayjs(a.menuDate).isBefore(dayjs(b.menuDate)) ? -1 : 1
   );
 
+
   return (
-    <div
-      className="
-    grid
-    grid-cols-2
-    sm:grid-cols-3
-    md:grid-cols-4
-    lg:grid-cols-5
-    xl:grid-cols-6
-    gap-2
-    py-2
-  "
-    >
-      {sortedMenus.map((menu, idx) => (
-        <div key={menu.id} className="min-w-[180px]">
-          <DailyMenuCard
-            menu={menu}
-            onEditMenu={onEditMenu}
-            onDeleteMenu={onDeleteMenu}
-            cardClassName={`text-xs px-1 py-1 ${CARD_COLORS[idx % CARD_COLORS.length]}`}
-          />
+    <div className="space-y-4">
+
+
+      <div className="flex justify-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {sortedMenus.map((menu, idx) => (
+            <DailyMenuCard
+              key={menu.id}
+              menu={menu}
+              onEditMenu={onEditMenu}
+              onDeleteMenu={onDeleteMenu}
+              cardClassName={`text-xs px-1 py-1 ${CARD_COLORS[idx % CARD_COLORS.length]}`}
+            />
+          ))}
         </div>
-      ))}
+      </div>
     </div>
   );
 }
