@@ -5,7 +5,8 @@ import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import MenuFormDialog from "./MenuFormDialog.tsx";
 import MenuItemFormDialog from "./MenuItemFormDialog.tsx";
-import { MdSkipPrevious, MdSkipNext } from "react-icons/md";
+import { MdSkipPrevious, MdSkipNext, MdContentCopy } from "react-icons/md";
+
 
 import isoWeek from "dayjs/plugin/isoWeek";
 
@@ -25,7 +26,7 @@ export default function MenusPage() {
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
 
   const service = useMenusService();
-
+  const isCurrentWeek = currentDate.startOf("isoWeek").isSame(dayjs().startOf("isoWeek"), "day");
 
 
   // Fetch menus based on current view and date
@@ -52,6 +53,29 @@ export default function MenusPage() {
       setError("");
     } catch (err: any) {
       setError(err?.response?.data?.message || "Failed to load menus");
+    }
+  };
+
+  // Copy this week's menu to current week
+  const copyThisMenuToCurrentWeek = async () => {
+
+    if (window.confirm("Are you sure you want to copy this menu to current week? All the current week's menu will be overwritten !")) {
+
+      try {
+        if (menus.length === 0) return;
+
+        dayjs.extend(isoWeek);
+
+        const sourceStart = currentDate.startOf("isoWeek").format("YYYY-MM-DD");
+        const targetStart = dayjs().startOf("isoWeek").format("YYYY-MM-DD");
+
+        await service.copyWeeklyMenu(sourceStart, targetStart);
+
+        setCurrentDate(dayjs()); // Navigate to current week
+        await fetchMenus(); // refresh
+      } catch (err: any) {
+        setError(err?.response?.data?.message || "Failed to copy weekly menus");
+      }
     }
   };
 
@@ -155,7 +179,25 @@ export default function MenusPage() {
         >
           <MdSkipNext className="w-6 h-6" />
         </button>
+        {view === "weekly" && !isCurrentWeek && menus.length > 0 && (
+          <div className="w-32 flex ">
+            <div className="relative group">
+              <button
+                className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition"
+                onClick={copyThisMenuToCurrentWeek}
+                aria-label="Copy to Current Week"
+              >
+                <MdContentCopy className="w-4 h-4" />
+              </button>
+              <span className="absolute left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-gray-800 text-white text-xs opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-10">
+                Copy to Current Week
+              </span>
+            </div>
+          </div>
+        )}
       </div>
+
+
 
       {/* Daily or Weekly view */}
       {view === "daily" ? (
