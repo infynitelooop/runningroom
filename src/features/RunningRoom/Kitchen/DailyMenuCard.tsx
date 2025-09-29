@@ -70,9 +70,8 @@ export default function DailyMenuCard({
         <CardContent className="space-y-2 overflow-hidden">
           {mealTypes.map(meal => (
             <div key={meal} className="min-w-0">
-              <h3 className="font-bold flex justify-between items-start gap-2 truncate">
-                <span className="truncate">{meal}</span>
-                {mealIcons[meal] || ''}
+              <h3 className="font-bold flex items-start gap-2 truncate">
+                {mealIcons[meal] || ''}<span className="truncate">{meal}</span>
               </h3>
               <ul
                 className="items-center gap-2 text-gray-800 mb-6 break-words"

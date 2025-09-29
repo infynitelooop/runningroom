@@ -57,7 +57,7 @@ export default function MenusPage() {
   };
 
   // Copy this week's menu to current week
-  const copyThisMenuToCurrentWeek = async () => {
+  const copyThisWeeksMenuToCurrentWeek = async () => {
 
     if (window.confirm("Are you sure you want to copy this menu to current week? All the current week's menu will be overwritten !")) {
 
@@ -75,6 +75,24 @@ export default function MenusPage() {
         await fetchMenus(); // refresh
       } catch (err: any) {
         setError(err?.response?.data?.message || "Failed to copy weekly menus");
+      }
+    }
+  };
+
+  const copyThisMenuToCurrentDay = async () => {
+    if (window.confirm("Are you sure you want to copy this menu to today? The current day's menu will be overwritten!")) {
+      try {
+        if (menus.length === 0) return;
+
+        const sourceDate = currentDate.format("YYYY-MM-DD");
+        const targetDate = dayjs().format("YYYY-MM-DD");
+
+        await service.copyDailyMenu(sourceDate, targetDate);
+
+        setCurrentDate(dayjs()); // Navigate to today
+        await fetchMenus(); // refresh
+      } catch (err: any) {
+        setError(err?.response?.data?.message || "Failed to copy daily menu");
       }
     }
   };
@@ -124,6 +142,11 @@ export default function MenusPage() {
     }
   };
 
+  const handleViewChange = (newView: "weekly" | "daily") => {
+    setView(newView);
+    setCurrentDate(dayjs());
+  };
+
   // ... existing return
   return (
     <div className="p-6 space-y-6">
@@ -141,7 +164,7 @@ export default function MenusPage() {
             name="menu-view"
             value="weekly"
             checked={view === "weekly"}
-            onChange={() => setView("weekly")}
+            onChange={() => handleViewChange("weekly")}
             className="accent-blue-600"
           />
           Weekly
@@ -152,7 +175,7 @@ export default function MenusPage() {
             name="menu-view"
             value="daily"
             checked={view === "daily"}
-            onChange={() => setView("daily")}
+            onChange={() => handleViewChange("daily")}
             className="accent-blue-600"
           />
           Daily
@@ -184,7 +207,7 @@ export default function MenusPage() {
             <div className="relative group">
               <button
                 className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition"
-                onClick={copyThisMenuToCurrentWeek}
+                onClick={copyThisWeeksMenuToCurrentWeek}
                 aria-label="Copy to Current Week"
               >
                 <MdContentCopy className="w-4 h-4" />
@@ -195,6 +218,24 @@ export default function MenusPage() {
             </div>
           </div>
         )}
+
+        {view === "daily" && !currentDate.isSame(dayjs(), "day") && menus.length > 0 && (
+          <div className="w-32 flex justify-end">
+            <div className="relative group">
+              <button
+                className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition"
+                onClick={copyThisMenuToCurrentDay}
+                aria-label="Copy to Today"
+              >
+                <MdContentCopy className="w-4 h-4" />
+              </button>
+              <span className="absolute left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-gray-800 text-white text-xs opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-10">
+                Copy to Today
+              </span>
+            </div>
+          </div>
+        )}
+
       </div>
 
 

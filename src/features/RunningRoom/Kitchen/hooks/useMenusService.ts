@@ -40,14 +40,19 @@ export function useMenusService() {
     await api.delete(`/menus/${id}`);
   };
 
-  const copyWeeklyMenu = async (sourceWeekStart : string, targetWeekStart: string): Promise<Menu[]> => {
+  const copyWeeklyMenu = async (sourceWeekStart: string, targetWeekStart: string): Promise<Menu[]> => {
     const res = await api.post<Menu[]>(
       `/menus/copy/week?sourceWeekStart=${sourceWeekStart}&targetWeekStart=${targetWeekStart}`
     );
     return res.data;
   };
 
-
+  const copyDailyMenu = async (sourceDate: string, targetDate: string): Promise<Menu> => {
+    const res = await api.post<Menu>(
+      `/menus/copy/day?sourceDate=${sourceDate}&targetDate=${targetDate}`
+    );
+    return res.data;
+  };
   const addMenuItem = async (menuId: string, item: MenuItem) => {
     const { data } = await api.post(`/menus/${menuId}/items`, item);
     return data;
@@ -71,6 +76,7 @@ export function useMenusService() {
     addMenuItem,
     updateMenuItem,
     deleteMenuItem,
-    copyWeeklyMenu
+    copyWeeklyMenu,
+    copyDailyMenu
   };
 }
