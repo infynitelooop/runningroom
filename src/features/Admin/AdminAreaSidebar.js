@@ -6,6 +6,7 @@ import { FaUser } from "react-icons/fa";
 import Tooltip from "@mui/material/Tooltip";
 import { useMyContext } from "../../store/ContextApi";
 import { HiOutlineBuildingLibrary } from "react-icons/hi2";
+import { BiSolidFoodMenu } from "react-icons/bi";
 
 
 
@@ -55,8 +56,8 @@ const Sidebar = () => {
           <Link
             to="/admin/users"
             className={`flex text-white items-center gap-2 ${pathName.startsWith("/admin/users")
-                ? "bg-btnColor"
-                : "bg-transparent"
+              ? "bg-btnColor"
+              : "bg-transparent"
               }   min-h-10 max-h-10 py-2 px-2 rounded-md hover:bg-btnColor`}
           >
             <span>
@@ -77,8 +78,8 @@ const Sidebar = () => {
           <Link
             to="/admin/buildings"
             className={`flex text-white items-center gap-2 ${pathName.startsWith("/admin/buildings")
-                ? "bg-btnColor"
-                : "bg-transparent"
+              ? "bg-btnColor"
+              : "bg-transparent"
               }   min-h-10 max-h-10 py-2 px-2 rounded-md hover:bg-btnColor`}
           >
             <span>
@@ -95,12 +96,12 @@ const Sidebar = () => {
 
         {/* ROOMS */}
 
-         <Tooltip title={`${openSidebar ? "" : "Rooms"}`}>
+        <Tooltip title={`${openSidebar ? "" : "Rooms"}`}>
           <Link
             to="/admin/rooms"
             className={`flex text-white items-center gap-2 ${pathName.startsWith("/admin/rooms")
-                ? "bg-btnColor"
-                : "bg-transparent"
+              ? "bg-btnColor"
+              : "bg-transparent"
               }   min-h-10 max-h-10 py-2 px-2 rounded-md hover:bg-btnColor`}
           >
             <span>
@@ -115,14 +116,37 @@ const Sidebar = () => {
           </Link>
         </Tooltip>
 
-         {/* AUDIT LOGS */}
+
+        {/* MENU */}
+
+        <Tooltip title={`${openSidebar ? "" : "Menu"}`}>
+          <Link
+            to="/admin/menu"
+            className={`flex text-white items-center gap-2 ${pathName.startsWith("/admin/menu")
+              ? "bg-btnColor"
+              : "bg-transparent"
+              }   min-h-10 max-h-10 py-2 px-2 rounded-md hover:bg-btnColor`}
+          >
+            <span>
+              <BiSolidFoodMenu />
+            </span>
+            <span
+              className={` ${!openSidebar ? "opacity-0" : ""
+                } transition-all font-semibold duration-150  ease-in-out`}
+            >
+              Menu
+            </span>
+          </Link>
+        </Tooltip>
+
+        {/* AUDIT LOGS */}
 
         <Tooltip title={`${openSidebar ? "" : "Audit Logs"}`}>
           <Link
             to="/admin/audit-logs"
             className={`flex text-white items-center gap-2 ${pathName.startsWith("/admin/audit-logs")
-                ? "bg-btnColor"
-                : "bg-transparent"
+              ? "bg-btnColor"
+              : "bg-transparent"
               }   min-h-10 max-h-10 py-2 px-2 rounded-md hover:bg-btnColor`}
           >
             <span>

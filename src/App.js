@@ -1,25 +1,25 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Login from "./components/Auth/Login";
-import Signup from "./components/Auth/Signup";
-import AllNotes from "./components/Notes/AllNotes";
-import NoteDetails from "./components/Notes/NoteDetails";
-import CreateNote from "./components/Notes/CreateNote";
-import Navbar from "./components/Navbar";
-import ProtectedRoute from "./components/ProtectedRoute";
-import LandingPage from "./components/LandingPage";
-import AccessDenied from "./components/Auth/AccessDenied";
-import Admin from "./components/Admin/Admin";
-import UserProfile from "./components/Auth/UserProfile";
-import ForgotPassword from "./components/Auth/ForgotPassword";
-import OAuth2RedirectHandler from "./components/Auth/OAuth2RedirectHandler";
+import Login from "./features/Auth/Login";
+import Signup from "./features/Auth/Signup";
+import AllNotes from "./features/Notes/AllNotes";
+import NoteDetails from "./features/Notes/NoteDetails";
+import CreateNote from "./features/Notes/CreateNote";
+import Navbar from "./features/Navbar";
+import ProtectedRoute from "./features/ProtectedRoute";
+import LandingPage from "./features/LandingPage";
+import AccessDenied from "./features/Auth/AccessDenied";
+import Admin from "./features/Admin/Admin";
+import UserProfile from "./features/Auth/UserProfile";
+import ForgotPassword from "./features/Auth/ForgotPassword";
+import OAuth2RedirectHandler from "./features/Auth/OAuth2RedirectHandler";
 import { Toaster } from "react-hot-toast";
-import NotFound from "./components/NotFound";
-import ContactPage from "./components/contactPage/ContactPage";
-import AboutPage from "./components/aboutPage/AboutPage";
-import ResetPassword from "./components/Auth/ResetPassword";
-import Footer from "./components/Footer/Footer";
-import RegistrationSuccess from "./components/Auth/RegistrationSuccess";
+import NotFound from "./features/NotFound";
+import ContactPage from "./features/contactPage/ContactPage";
+import AboutPage from "./features/aboutPage/AboutPage";
+import ResetPassword from "./features/Auth/ResetPassword";
+import Footer from "./features/Footer/Footer";
+import RegistrationSuccess from "./features/Auth/RegistrationSuccess";
 
 const App = () => {
   return (
