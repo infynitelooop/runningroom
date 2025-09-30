@@ -13,7 +13,7 @@ export type RoomFormInputs = {
   buildingId: string;
   crewType: string;
   roomCategory: string;
-  beds: number;
+  bedCount: number;
   attachment: string;
   status: string;
   description?: string;
@@ -116,7 +116,7 @@ const RoomForm: React.FC<RoomFormProps> = ({
       </div>
 
       {/* Beds */}
-      <InputField label="Beds" id="beds" type="number" register={register} errors={errors} required message="*Beds is required" />
+      <InputField label="Bed Count" id="bedCount" type="number" register={register} errors={errors} required message="*Beds is required" />
 
       {/* Attachment */}
       <div>

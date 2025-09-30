@@ -139,6 +139,35 @@ const Sidebar = () => {
           </Link>
         </Tooltip>
 
+
+
+        
+        {/* BOOKINGS */}
+
+        <Tooltip title={`${openSidebar ? "" : "Bookings"}`}>
+          <Link
+            to="/admin/bookings"
+            className={`flex text-white items-center gap-2 ${pathName.startsWith("/admin/bookings")
+              ? "bg-btnColor"
+              : "bg-transparent"
+              }   min-h-10 max-h-10 py-2 px-2 rounded-md hover:bg-btnColor`}
+          >
+            <span>
+              <BiSolidFoodMenu />
+            </span>
+            <span
+              className={` ${!openSidebar ? "opacity-0" : ""
+                } transition-all font-semibold duration-150  ease-in-out`}
+            >
+              Bookings
+            </span>
+          </Link>
+        </Tooltip>
+
+
+
+
+
         {/* AUDIT LOGS */}
 
         <Tooltip title={`${openSidebar ? "" : "Audit Logs"}`}>
