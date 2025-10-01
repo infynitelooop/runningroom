@@ -3,7 +3,7 @@ import { Button } from "../../../features/ui/button.tsx";
 import { Plus } from "lucide-react";
 import { BuildingCard } from "./components/BuildingCard.tsx";
 import { BuildingFormDialog } from "./components/BuildingFormDialog.tsx";
-import { useBuildingsService, Building } from "../hooks/useBuildingsService.ts";
+import { useBuildingsService, Building } from "./hooks/useBuildingsService.ts";
 
 const colors = [
   "bg-red-100 text-red-800",

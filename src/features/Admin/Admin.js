@@ -12,6 +12,7 @@ import CreateRoom from "../RunningRoom/Room/CreateRoom.tsx";
 import BuildingsPage from "../RunningRoom/Building/BuildingsPage.tsx";
 import MenusPage from "../RunningRoom/Kitchen/MenusPage.tsx";
 import CrewBookingPage from "../RunningRoom/Bookings/CrewBookingPage.tsx";
+import BedOccupancyDashboard from "../RunningRoom/Bookings/BedOccupancyDashboard.tsx";
 
 const Admin = () => {
   // Access the openSidebar hook using the useMyContext hook from the ContextProvider
@@ -36,7 +37,7 @@ const Admin = () => {
 
           <Route path="menu" element={<MenusPage />} />
 
-          <Route path="bookings" element={<CrewBookingPage />} />
+          <Route path="bookings" element={<BedOccupancyDashboard />} />
 
 
           {/* Add other routes as necessary */}

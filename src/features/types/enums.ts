@@ -10,4 +10,5 @@ export type Enums = {
   roomCategory: EnumItem[];
   attachmentType: EnumItem[];
   roomStatus: EnumItem[];
+  occupancyStatus: EnumItem[];
 };

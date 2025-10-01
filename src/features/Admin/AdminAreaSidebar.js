@@ -139,9 +139,6 @@ const Sidebar = () => {
           </Link>
         </Tooltip>
 
-
-
-        
         {/* BOOKINGS */}
 
         <Tooltip title={`${openSidebar ? "" : "Bookings"}`}>
@@ -163,10 +160,6 @@ const Sidebar = () => {
             </span>
           </Link>
         </Tooltip>
-
-
-
-
 
         {/* AUDIT LOGS */}
 
