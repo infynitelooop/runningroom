@@ -66,7 +66,10 @@ export default function MenusPage() {
 
         dayjs.extend(isoWeek);
 
+        // Get start of the week for the current selected date
         const sourceStart = currentDate.startOf("isoWeek").format("YYYY-MM-DD");
+
+        // dayjs() returns current date and time (similar to new Date() in JavaScript)
         const targetStart = dayjs().startOf("isoWeek").format("YYYY-MM-DD");
 
         await service.copyWeeklyMenu(sourceStart, targetStart);
@@ -78,6 +81,29 @@ export default function MenusPage() {
       }
     }
   };
+
+  const copyPreviousWeeksMenuToCurrentWeek = async () => {
+  if (window.confirm("Are you sure you want to copy the previous week's menu to the current week? All the current week's menu will be overwritten!")) {
+    try {
+      if (menus.length === 0) return;
+
+      dayjs.extend(isoWeek);
+
+      // Get start of previous week
+      const sourceStart = dayjs().subtract(1, "week").startOf("isoWeek").format("YYYY-MM-DD");
+      // Get start of current week
+      const targetStart = dayjs().startOf("isoWeek").format("YYYY-MM-DD");
+
+      await service.copyWeeklyMenu(sourceStart, targetStart);
+
+      setCurrentDate(dayjs()); // Navigate to current week
+      await fetchMenus(); // refresh
+    } catch (err: any) {
+      setError(err?.response?.data?.message || "Failed to copy previous week's menu");
+    }
+  }
+};
+
 
   const copyThisMenuToCurrentDay = async () => {
     if (window.confirm("Are you sure you want to copy this menu to today? The current day's menu will be overwritten!")) {
@@ -163,7 +189,7 @@ export default function MenusPage() {
             type="radio"
             name="menu-view"
             value="weekly"
-            checked={view === "weekly"}
+            checked={view === "weekly"} 
             onChange={() => handleViewChange("weekly")}
             className="accent-blue-600"
           />
@@ -202,6 +228,8 @@ export default function MenusPage() {
         >
           <MdSkipNext className="w-6 h-6" />
         </button>
+
+        {/* If not current week/day, show copy button */}
         {view === "weekly" && !isCurrentWeek && menus.length > 0 && (
           <div className="w-32 flex ">
             <div className="relative group">
@@ -212,8 +240,26 @@ export default function MenusPage() {
               >
                 <MdContentCopy className="w-4 h-4" />
               </button>
-              <span className="absolute left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-gray-800 text-white text-xs opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-10">
+              <span className="absolute left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-gray-400 text-white text-xs opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-10">
                 Copy to Current Week
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* If not current week/day, show copy button */}
+        {view === "weekly" && isCurrentWeek && (
+          <div className="w-32 flex ">
+            <div className="relative group">
+              <button
+                className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition"
+                onClick={copyPreviousWeeksMenuToCurrentWeek}
+                aria-label="Copy from previous week"
+              >
+                <MdContentCopy className="w-4 h-4" />
+              </button>
+              <span className="absolute left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-gray-400 text-white text-xs opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-10">
+                Copy from previous week
               </span>
             </div>
           </div>
