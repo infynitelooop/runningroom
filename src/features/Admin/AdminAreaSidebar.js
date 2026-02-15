@@ -7,6 +7,7 @@ import Tooltip from "@mui/material/Tooltip";
 import { useMyContext } from "../../store/ContextApi";
 import { HiOutlineBuildingLibrary } from "react-icons/hi2";
 import { BiSolidFoodMenu } from "react-icons/bi";
+import { MdDashboard } from "react-icons/md";
 
 
 
@@ -50,6 +51,27 @@ const Sidebar = () => {
 
 
       <div className="flex flex-col gap-5 mt-4">
+
+        {/* DASHBOARD */}
+        <Tooltip title={`${openSidebar ? "" : "Dashboard"}`}>
+          <Link
+            to="/dashboard"
+            className={`flex text-white items-center gap-2 ${pathName.startsWith("/admin/dashboard")
+              ? "bg-btnColor"
+              : "bg-transparent"
+              }   min-h-10 max-h-10 py-2 px-2 rounded-md hover:bg-btnColor`}
+          >
+            <span>
+              <MdDashboard />
+            </span>
+            <span
+              className={` ${!openSidebar ? "opacity-0" : ""
+                } transition-all font-semibold duration-150  ease-in-out`}
+            >
+              Dashboard
+            </span>
+          </Link>
+        </Tooltip>
 
         {/* USER */}
         <Tooltip title={`${openSidebar ? "" : "All Users"}`}>

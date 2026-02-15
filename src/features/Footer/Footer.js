@@ -10,8 +10,9 @@ import {
 const Footer = () => {
   const currentYear = new Date().getFullYear();
   return (
-    <footer className="bg-headerColor py-6 lg:py-2  min-h-28 z-50  relative">
-      <div className="xl:px-10 sm:px-6 px-4  min-h-28  flex lg:flex-row flex-col  lg:gap-0 gap-5  justify-between items-center ">
+
+  <footer className="bg-headerColor py-3 lg:py-2 z-50 relative">
+    <div className="xl:px-10 sm:px-6 px-4 flex lg:flex-row flex-col gap-3 lg:gap-0 justify-between items-center">
         <ul className="flex flex-1  md:gap-6 gap-4   text-white flex-row items-center ">
           <li>
             <Link to="/about">
