@@ -1,7 +1,16 @@
 FROM node:20 AS build
 WORKDIR /app
-COPY . .
+
+# Copy ONLY package files first
+COPY package.json package-lock.json ./
+
+# Install deps (cached layer)
 RUN npm install
+
+# Copy rest of code
+COPY . .
+
+# Build React app
 RUN npm run build
 
 FROM nginx:alpine
