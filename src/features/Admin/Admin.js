@@ -11,7 +11,6 @@ import RoomDetails from "../RunningRoom/Room/RoomDetails.tsx";
 import CreateRoom from "../RunningRoom/Room/CreateRoom.tsx";
 import BuildingsPage from "../RunningRoom/Building/BuildingsPage.tsx";
 import MenusPage from "../RunningRoom/Kitchen/MenusPage.tsx";
-import CrewBookingPage from "../RunningRoom/Bookings/CrewBookingPage.tsx";
 import BedOccupancyDashboard from "../RunningRoom/Bookings/BedOccupancyDashboard.tsx";
 
 const Admin = () => {
@@ -21,7 +20,7 @@ const Admin = () => {
     <div className="flex">
       <AdminSidebar />
       <div
-        className={`transition-all overflow-hidden flex-1 duration-150 w-full min-h-[calc(100vh-74px)] ${openSidebar ? "lg:ml-52 ml-12" : "ml-12"
+        className={`transition-all overflow-hidden flex-1 duration-150 w-full ${openSidebar ? "lg:ml-52 ml-12" : "ml-12"
           }`}
       >
         <Routes>

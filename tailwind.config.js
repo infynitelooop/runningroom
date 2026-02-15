@@ -28,7 +28,7 @@ module.exports = {
         dancingScript: ["Dancing Script"],
       },
       fontSize: {
-        logoText: "30px",
+        logoText: "20px",
         customText: "15px",
         tablehHeaderText: "16px",
         headerText: ["50px", "60px"],

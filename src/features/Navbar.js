@@ -39,7 +39,7 @@ const Navbar = () => {
               : "h-0 overflow-hidden "
           }  lg:h-auto transition-all duration-100 font-montserrat text-textColor flex lg:flex-row flex-col lg:gap-8 gap-2`}
         >
-          {token && (
+          {/* {token && (
             <>
               <Link to="/notes">
                 <li
@@ -60,9 +60,9 @@ const Navbar = () => {
                 </li>
               </Link>
             </>
-          )}
+          )} */}
 
-          <Link to="/contact">
+          {/* <Link to="/contact">
             <li
               className={`${
                 pathName === "/contact" ? "font-semibold " : ""
@@ -80,7 +80,7 @@ const Navbar = () => {
             >
               About
             </li>
-          </Link>
+          </Link> */}
 
           {token ? (
             <>

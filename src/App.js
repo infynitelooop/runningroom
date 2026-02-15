@@ -20,12 +20,19 @@ import AboutPage from "./features/aboutPage/AboutPage";
 import ResetPassword from "./features/Auth/ResetPassword";
 import Footer from "./features/Footer/Footer";
 import RegistrationSuccess from "./features/Auth/RegistrationSuccess";
+import BedOccupancyDashboard from "./features/RunningRoom/Bookings/BedOccupancyDashboard.tsx";
 
 const App = () => {
   return (
+
+  <div className="min-h-screen flex flex-col">
+
     <Router>
       <Navbar />
       <Toaster position="bottom-center" reverseOrder={false} />
+
+
+      <main className="flex-grow">
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
@@ -36,6 +43,15 @@ const App = () => {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/reset-password" element={<ResetPassword />} />
 
+
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <BedOccupancyDashboard />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/notes/:id"
           element={
@@ -82,8 +98,10 @@ const App = () => {
 
         <Route path="*" element={<NotFound />} />
       </Routes>
+      </main>
       <Footer />
     </Router>
+  </div>
   );
 };
 

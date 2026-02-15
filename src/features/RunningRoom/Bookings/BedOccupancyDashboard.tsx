@@ -3,6 +3,8 @@ import { useBedOccupancyDashboard } from "./hooks/useBedOccupancyDashboard.ts";
 import { FaBed } from "react-icons/fa";
 import { useEnums } from "../../../store/EnumsContext.tsx";
 import  { BookingFormDialog } from "./components/BookingFormDialog.tsx";
+import { FiRefreshCcw } from "react-icons/fi";
+
 
 export default function BedOccupancyDashboard() {
     const { data, loading, error, fetchOccupancy } = useBedOccupancyDashboard();
@@ -73,15 +75,16 @@ export default function BedOccupancyDashboard() {
     };
 
     return (
-        <div className="p-6 space-y-6">
+        <div className=" sm:py-10 sm:px-5 px-0 py-4">
             {/* Header */}
-            <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-bold">Bed-wise Occupancy</h1>
+            <div className="flex items-center justify-center gap-4">
+                <h1 className="text-lg font-bold">Bed-wise Occupancy</h1>
                 <button
-                    className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+                    className="bg-gray-400 text-white px-2 py-2 rounded hover:bg-blue-700"
                     onClick={fetchOccupancy}
                 >
-                    Refresh
+                    <FiRefreshCcw />
+
                 </button>
             </div>
 
@@ -94,21 +97,21 @@ export default function BedOccupancyDashboard() {
             <div className="space-y-8">
                 {data.map((building) => (
                     <div key={building.buildingName}>
-                        <h2 className="text-xl font-semibold mb-4">
+                        <h2 className="text-sm mb-4">
                             🏢 {building.buildingName}
                         </h2>
 
                         {/* Rooms inside building */}
-                        <div className="flex flex-wrap gap-6">
+                        <div className="flex flex-wrap gap-2">
                             {building.rooms.map((room) => (
                                 <div
                                     key={room.roomNumber}
-                                    className={`p-4 rounded-lg shadow-md w-fit border-2 ${getRoomColor(
+                                    className={`p-2 rounded-lg shadow-md w-fit border-2 ${getRoomColor(
                                         room.beds
                                     )}`}
                                 >
-                                    <h3 className="text-lg font-semibold mb-3">
-                                        Room {room.roomNumber}
+                                    <h3 className="text-sm mb-3">
+                                        {room.roomNumber}
                                     </h3>
                                     <div className="flex gap-3 flex-wrap">
                                         {room.beds.map((bed) => {
@@ -147,7 +150,7 @@ export default function BedOccupancyDashboard() {
                                             return (
                                                 <div
                                                     key={bed.bookingId}
-                                                    className={`flex flex-col items-center justify-center w-12 h-12 rounded-lg shadow text-white cursor-pointer ${getBedColor(
+                                                    className={`flex flex-col items-center justify-center w-6 h-6 rounded-lg shadow text-white cursor-pointer ${getBedColor(
                                                         bed.occupancyStatus
                                                     )}`}
                                                     onClick={handleClick}
