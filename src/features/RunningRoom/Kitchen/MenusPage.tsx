@@ -16,7 +16,7 @@ export default function MenusPage() {
   // State variables
   const [view, setView] = useState("weekly");
   const [menus, setMenus] = useState<Menu[]>([]);
-  const [currentDate, setCurrentDate] = useState(dayjs());
+  const [selectedDate, setselectedDate] = useState(dayjs());
   const [error, setError] = useState("");
 
   const [openMenuDialog, setOpenMenuDialog] = useState(false);
@@ -26,7 +26,13 @@ export default function MenusPage() {
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
 
   const service = useMenusService();
-  const isCurrentWeek = currentDate.startOf("isoWeek").isSame(dayjs().startOf("isoWeek"), "day");
+
+  const weekStart = selectedDate.startOf("isoWeek");
+  const currentWeekStart = dayjs().startOf("isoWeek");
+
+  const isCurrentWeek = weekStart.isSame(currentWeekStart, "day");
+  const isPastWeek = weekStart.isBefore(currentWeekStart, "day");
+  const isFutureWeek = weekStart.isAfter(currentWeekStart, "day");
 
 
   // Fetch menus based on current view and date
@@ -36,17 +42,17 @@ export default function MenusPage() {
       if (view === "weekly") {
 
         dayjs.extend(isoWeek);
-        //const currentDate = dayjs();
+        //const selectedDate = dayjs();
 
         // If today is Sunday, shift back 1 day to Saturday before finding isoWeek start
-        const adjustedDate = currentDate.day() === 0 ? currentDate.subtract(1, "day") : currentDate;
+        const adjustedDate = selectedDate.day() === 0 ? selectedDate.subtract(1, "day") : selectedDate;
 
         const startOfWeek = adjustedDate.startOf("isoWeek").format("YYYY-MM-DD");
         const endOfWeek = adjustedDate.endOf("isoWeek").format("YYYY-MM-DD");
 
         setMenus(await service.fetchWeekly(startOfWeek, endOfWeek));
       } else {
-        const today = currentDate.format("YYYY-MM-DD");
+        const today = selectedDate.format("YYYY-MM-DD");
         const menu = await service.fetchDaily(today);
         setMenus(menu ? [menu] : []);
       }
@@ -62,16 +68,22 @@ export default function MenusPage() {
     if (window.confirm("Are you sure you want to copy this menu to current week? All the current week's menu will be overwritten !")) {
 
       try {
-        if (menus.length === 0) return;
+        if (menus.length === 0) {
+          setError("No menu found for the previous week to copy.");
+          return;
+        }
 
         dayjs.extend(isoWeek);
 
-        const sourceStart = currentDate.startOf("isoWeek").format("YYYY-MM-DD");
+        // Get start of the week for the current selected date
+        const sourceStart = selectedDate.startOf("isoWeek").format("YYYY-MM-DD");
+
+        // dayjs() returns current date and time (similar to new Date() in JavaScript)
         const targetStart = dayjs().startOf("isoWeek").format("YYYY-MM-DD");
 
         await service.copyWeeklyMenu(sourceStart, targetStart);
 
-        setCurrentDate(dayjs()); // Navigate to current week
+        setselectedDate(dayjs()); // Navigate to current week
         await fetchMenus(); // refresh
       } catch (err: any) {
         setError(err?.response?.data?.message || "Failed to copy weekly menus");
@@ -79,17 +91,54 @@ export default function MenusPage() {
     }
   };
 
+  const copyPreviousWeeksMenuToSelectedtWeek = async () => {
+    if (window.confirm("Are you sure you want to copy the previous week's menu to the current week? All the current week's menu will be overwritten!")) {
+      try {
+
+        const previousWeekDate = selectedDate.subtract(1, "week");
+
+        // If the date is Sunday, shift back 1 day to Saturday before finding isoWeek start
+        const previousWeekAdjustedDate = previousWeekDate.day() === 0 ? previousWeekDate.subtract(1, "day") : previousWeekDate;
+
+        const previousWeekStart = previousWeekAdjustedDate.startOf("isoWeek").format("YYYY-MM-DD");
+        const previousWeekEnd = previousWeekAdjustedDate.endOf("isoWeek").format("YYYY-MM-DD");
+
+        // fetch the previous weeks menu to check if it exists
+        setMenus(await service.fetchWeekly(previousWeekStart, previousWeekEnd));
+
+        const fetchedMenus = await service.fetchWeekly(previousWeekStart, previousWeekEnd);
+        if (fetchedMenus.length === 0) {
+          setError("No menu found for the previous week to copy.");
+          return;
+        }
+
+        // Get start of previous week
+        const sourceStart = previousWeekStart;
+        // Get start of current week
+        const targetStart = selectedDate.startOf("isoWeek").format("YYYY-MM-DD");
+
+        await service.copyWeeklyMenu(sourceStart, targetStart);
+
+        setselectedDate(dayjs()); // Navigate to current week
+        await fetchMenus(); // refresh
+      } catch (err: any) {
+        setError(err?.response?.data?.message || "Failed to copy previous week's menu");
+      }
+    }
+  };
+
+
   const copyThisMenuToCurrentDay = async () => {
     if (window.confirm("Are you sure you want to copy this menu to today? The current day's menu will be overwritten!")) {
       try {
         if (menus.length === 0) return;
 
-        const sourceDate = currentDate.format("YYYY-MM-DD");
+        const sourceDate = selectedDate.format("YYYY-MM-DD");
         const targetDate = dayjs().format("YYYY-MM-DD");
 
         await service.copyDailyMenu(sourceDate, targetDate);
 
-        setCurrentDate(dayjs()); // Navigate to today
+        setselectedDate(dayjs()); // Navigate to today
         await fetchMenus(); // refresh
       } catch (err: any) {
         setError(err?.response?.data?.message || "Failed to copy daily menu");
@@ -101,7 +150,7 @@ export default function MenusPage() {
   useEffect(() => {
     fetchMenus();
     // eslint-disable-next-line
-  }, [view, currentDate]);
+  }, [view, selectedDate]);
 
   const handleSaveMenu = async (data: Omit<Menu, "id">) => {
     if (selectedMenu) {
@@ -144,7 +193,7 @@ export default function MenusPage() {
 
   const handleViewChange = (newView: "weekly" | "daily") => {
     setView(newView);
-    setCurrentDate(dayjs());
+    setselectedDate(dayjs());
   };
 
   // ... existing return
@@ -185,24 +234,26 @@ export default function MenusPage() {
       <div className="flex justify-center items-center gap-4 mb-4">
         <button
           className="p-2 rounded hover:bg-gray-200"
-          onClick={() => setCurrentDate(d => view === "weekly" ? d.subtract(1, "week") : d.subtract(1, "day"))}
+          onClick={() => setselectedDate(d => view === "weekly" ? d.subtract(1, "week") : d.subtract(1, "day"))}
           aria-label="Previous"
         >
           <MdSkipPrevious className="w-6 h-6" />
         </button>
         <span className="font-semibold">
           {view === "weekly"
-            ? `${currentDate.startOf("isoWeek").format("DD MMM")} - ${currentDate.endOf("isoWeek").format("DD MMM YYYY")}`
-            : currentDate.format("dddd, DD MMM YYYY")}
+            ? `${selectedDate.startOf("isoWeek").format("DD MMM")} - ${selectedDate.endOf("isoWeek").format("DD MMM YYYY")}`
+            : selectedDate.format("dddd, DD MMM YYYY")}
         </span>
         <button
           className="p-2 rounded hover:bg-gray-200"
-          onClick={() => setCurrentDate(d => view === "weekly" ? d.add(1, "week") : d.add(1, "day"))}
+          onClick={() => setselectedDate(d => view === "weekly" ? d.add(1, "week") : d.add(1, "day"))}
           aria-label="Next"
         >
           <MdSkipNext className="w-6 h-6" />
         </button>
-        {view === "weekly" && !isCurrentWeek && menus.length > 0 && (
+
+        {/* If not current week/day, show copy button */}
+        {view === "weekly" && isPastWeek && menus.length > 0 && (
           <div className="w-32 flex ">
             <div className="relative group">
               <button
@@ -212,14 +263,32 @@ export default function MenusPage() {
               >
                 <MdContentCopy className="w-4 h-4" />
               </button>
-              <span className="absolute left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-gray-800 text-white text-xs opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-10">
+              <span className="absolute left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-gray-400 text-white text-xs opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-10">
                 Copy to Current Week
               </span>
             </div>
           </div>
         )}
 
-        {view === "daily" && !currentDate.isSame(dayjs(), "day") && menus.length > 0 && (
+        {/* If not current week/day, show copy button */}
+        {view === "weekly" && (isCurrentWeek || isFutureWeek) && (
+          <div className="w-32 flex ">
+            <div className="relative group">
+              <button
+                className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition"
+                onClick={copyPreviousWeeksMenuToSelectedtWeek}
+                aria-label="Copy from previous week"
+              >
+                <MdContentCopy className="w-4 h-4" />
+              </button>
+              <span className="absolute left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-gray-400 text-white text-xs opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-10">
+                Copy from previous week
+              </span>
+            </div>
+          </div>
+        )}
+
+        {view === "daily" && !selectedDate.isSame(dayjs(), "day") && menus.length > 0 && (
           <div className="w-32 flex justify-end">
             <div className="relative group">
               <button

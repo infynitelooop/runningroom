@@ -23,7 +23,7 @@ interface Room {
   description?: string;
   crewType: string;
   roomCategory: string;
-  beds: number;
+  bedCount: number;
   attachment: string;
   status: string;
   tenantId?: string;
@@ -111,7 +111,7 @@ const getColumns = (): GridColDef[] => [
     renderCell: (params) => <span>{formatEnum(params.row.roomCategory)}</span>,
   },
   {
-    field: "beds",
+    field: "bedCount",
     headerName: "Beds",
     minWidth: 50,
     headerAlign: "center",
