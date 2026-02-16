@@ -4,7 +4,7 @@ console.log("API URL:", process.env.REACT_APP_API_URL);
 
 // Create an Axios instance
 const api = axios.create({
-  baseURL: `/api`,
+  baseURL: `${process.env.REACT_APP_API_URL}/api`,
   headers: {
     "Content-Type": "application/json",
     'Cache-Control': 'no-cache',
@@ -25,7 +25,7 @@ api.interceptors.request.use(
     if (!csrfToken) {
       try {
         const response = await axios.get(
-          `/api/csrf-token`,
+          `${process.env.REACT_APP_API_URL}/api/csrf-token`,
           { withCredentials: true }
         );
         csrfToken = response.data.token;
