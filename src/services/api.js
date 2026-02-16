@@ -25,7 +25,7 @@ api.interceptors.request.use(
     if (!csrfToken) {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/csrf-token`,
+          `/api/csrf-token`,
           { withCredentials: true }
         );
         csrfToken = response.data.token;
