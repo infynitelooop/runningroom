@@ -45,8 +45,19 @@ const RoomForm: React.FC<RoomFormProps> = ({
   saving = false,
   readOnlyRoomNumber = false,
 }) => {
+  // Set default values for selects based on enums and buildings
+  const formDefaultValues: RoomFormInputs = {
+    ...defaultValues,
+    roomType: defaultValues.roomType || enums.roomTypes[0]?.key || "",
+    buildingId: defaultValues.buildingId || buildings[0]?.id || "",
+    crewType: defaultValues.crewType || enums.crewTypes[0]?.key || "",
+    roomCategory: defaultValues.roomCategory || enums.roomCategory[0]?.key || "",
+    attachment: defaultValues.attachment || enums.attachmentType[0]?.key || "",
+    status: defaultValues.status || enums.roomStatus[0]?.key || "",
+  };
+
   const { register, handleSubmit, formState: { errors } } = useForm<RoomFormInputs>({
-    defaultValues,
+    defaultValues: formDefaultValues,
   });
 
   return (
@@ -76,9 +87,15 @@ const RoomForm: React.FC<RoomFormProps> = ({
       {/* AC */}
       <div>
         <label className="block text-slate-700 font-semibold pb-1">AC</label>
-        <select {...register("ac", { required: "*AC is required" })} className="border p-2 rounded w-full">
-          <option value={true}>Yes</option>
-          <option value={false}>No</option>
+        <select
+          {...register("ac", {
+            required: "*AC is required",
+            setValueAs: (value) => value === "true",
+          })}
+          className="border p-2 rounded w-full"
+        >
+          <option value="true">Yes</option>
+          <option value="false">No</option>
         </select>
       </div>
 

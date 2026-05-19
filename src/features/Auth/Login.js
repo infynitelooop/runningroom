@@ -38,11 +38,25 @@ const Login = () => {
     mode: "onTouched",
   });
 
-  const handleSuccessfulLogin = (token, decodedToken) => {
-    const user = {
+  const getUserFromDecodedToken = (decodedToken) => {
+    const roles = Array.isArray(decodedToken.roles)
+      ? decodedToken.roles
+      : typeof decodedToken.roles === "string"
+      ? decodedToken.roles.split(",")
+      : [];
+
+    return {
       username: decodedToken.sub,
-      roles: decodedToken.roles || [],
+      roles,
+      email: decodedToken.email || decodedToken.preferred_username || "",
+      location: decodedToken.location || decodedToken.locale || "",
+      division: decodedToken.division || "",
+      zone: decodedToken.zone || "",
     };
+  };
+
+  const handleSuccessfulLogin = (token, decodedToken) => {
+    const user = getUserFromDecodedToken(decodedToken);
     localStorage.setItem("JWT_TOKEN", token);
     localStorage.setItem("USER", JSON.stringify(user));
 

@@ -8,6 +8,23 @@ const OAuth2RedirectHandler = () => {
   const location = useLocation();
   const { setToken, setIsAdmin } = useMyContext();
 
+  const getUserFromDecodedToken = (decodedToken) => {
+    const roles = Array.isArray(decodedToken.roles)
+      ? decodedToken.roles
+      : typeof decodedToken.roles === 'string'
+      ? decodedToken.roles.split(',')
+      : [];
+
+    return {
+      username: decodedToken.sub,
+      roles,
+      email: decodedToken.email || decodedToken.preferred_username || '',
+      location: decodedToken.location || decodedToken.locale || '',
+      division: decodedToken.division || '',
+      zone: decodedToken.zone || '',
+    };
+  };
+
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const token = params.get('token');
@@ -21,16 +38,15 @@ const OAuth2RedirectHandler = () => {
 
         localStorage.setItem('JWT_TOKEN', token);
 
-        const user = {
-          username: decodedToken.sub,
-          roles: decodedToken.roles.split(','),
-        };
+        const user = getUserFromDecodedToken(decodedToken);
         console.log("User Object:", user);
         localStorage.setItem('USER', JSON.stringify(user));
 
         // Update context state
         setToken(token);
-        setIsAdmin(user.roles.includes('ADMIN'));
+        setIsAdmin(
+          user.roles.includes('ADMIN') || user.roles.includes('ROLE_ADMIN')
+        );
 
         // Delay navigation to ensure local storage operations complete
         setTimeout(() => {

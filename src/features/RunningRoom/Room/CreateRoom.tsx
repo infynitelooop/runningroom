@@ -22,9 +22,12 @@ const CreateRoom: React.FC = () => {
   const handleSave = async (formData: RoomFormInputs) => {
     setSaving(true);
     try {
-      await api.post("/rooms", formData);
+      const { data } = await api.post("/rooms", formData);
       toast.success("Room created successfully");
-      navigate("/admin/rooms");
+      const roomId = data?.id || data?.roomId;
+      if (roomId) {
+        navigate("/admin/rooms");
+      } 
     } catch (err: any) {
       toast.error(err?.response?.data?.message || "Failed to create room");
       console.error(err);
@@ -48,7 +51,7 @@ const CreateRoom: React.FC = () => {
           buildingId: "",
           crewType: "",
           roomCategory: "",
-          beds: 1,
+          bedCount: 1,
           attachment: "",
           status: "",
           description: "",

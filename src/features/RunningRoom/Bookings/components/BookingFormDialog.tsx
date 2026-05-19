@@ -46,6 +46,8 @@ type Props = {
   error?: string;
   enums: {
     roomStatus: EnumOption[];
+    mealType: EnumOption[];
+    mealCategory: EnumOption[];
   };
 };
 
@@ -94,7 +96,7 @@ export function BookingFormDialog({
     setFetchingCrew(true);
 
     try {
-      const response = await api.get(`/api/crew/${crewId}`);
+      const response = await api.get(`/crew/${crewId}`);
       const crew = response.data;
 
       // Fill read-only fields
@@ -185,13 +187,28 @@ export function BookingFormDialog({
           <section className="bg-gray-50 p-4 rounded-xl shadow-sm border border-gray-200">
             <h3 className="font-semibold text-lg text-gray-700 mb-3 flex items-center gap-2">🍽️ Meal Info</h3>
             <div className="grid grid-cols-2 gap-4">
-              <div>
+
+              {/* <div>
                 <Label htmlFor="mealType">Meal Type</Label>
-                <Input id="mealType" {...register("mealType")} />
-              </div>
+
+                <select {...register("mealType", { required: "*mealType is required" })} className="border p-2 rounded w-full">
+                  {enums.mealType.map(rt => (
+                    <option key={rt.key} value={rt.key}>{rt.label}</option>
+                  ))}
+                </select>
+              </div> */}
               <div>
                 <Label htmlFor="vegNonVeg">Veg/Non-Veg</Label>
-                <Input id="vegNonVeg" {...register("vegNonVeg")} />
+                  <select {...register("vegNonVeg", { required: "*mealCategory is required" })} className="border p-2 rounded w-full">
+                  {enums.mealCategory.map(rt => (
+                    <option key={rt.key} value={rt.key}>{rt.label}</option>
+                  ))}
+                </select>
+                
+              </div>
+                <div>
+                <Label htmlFor="noOfMeals">No of Meals</Label>
+                <Input id="noOfMeals" type="number" {...register("noOfMeals", { valueAsNumber: true })} />
               </div>
 
               <div className="flex items-center space-x-2">
@@ -199,10 +216,7 @@ export function BookingFormDialog({
                 <Label htmlFor="subsidizedFood">Subsidized Food</Label>
               </div>
 
-              <div>
-                <Label htmlFor="noOfMeals">No of Meals</Label>
-                <Input id="noOfMeals" type="number" {...register("noOfMeals", { valueAsNumber: true })} />
-              </div>
+
             </div>
           </section>
 

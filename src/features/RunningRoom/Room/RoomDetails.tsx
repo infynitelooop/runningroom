@@ -55,7 +55,7 @@ const RoomDetails: React.FC = () => {
     try {
       await api.put("/rooms", data);
       toast.success("Room updated successfully");
-      fetchRoom();
+      navigate("/admin/rooms");
     } catch (err: any) {
       toast.error(err?.response?.data?.message || "Failed to update room");
     } finally {

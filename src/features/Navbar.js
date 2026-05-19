@@ -11,7 +11,7 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   // Access the states by using the useMyContext hook from the ContextProvider
-  const { token, setToken, setCurrentUser, isAdmin, setIsAdmin } =
+  const { token, setToken, currentUser, setCurrentUser, isAdmin, setIsAdmin } =
     useMyContext();
 
   const handleLogout = () => {
@@ -30,7 +30,12 @@ const Navbar = () => {
       <nav className="sm:px-10 px-4 flex w-full h-full items-center justify-between">
         <Link to="/">
           {" "}
-          <h3 className=" font-semibold text-logoText">Running Room</h3>
+          <h3 className=" font-semibold text-logoText">
+            Running Room
+            {currentUser?.location ? (
+              <span className="text-sm font-normal ml-2">({currentUser.location})</span>
+            ) : null}
+          </h3>
         </Link>
         <ul
           className={`lg:static  absolute left-0  top-16 w-full lg:w-fit lg:px-0 sm:px-10 px-4  lg:bg-transparent bg-headerColor   ${

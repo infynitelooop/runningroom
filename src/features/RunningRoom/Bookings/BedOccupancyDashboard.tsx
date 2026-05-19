@@ -21,20 +21,22 @@ export default function BedOccupancyDashboard() {
     const [saving, setSaving] = useState(false);
     const [formError, setFormError] = useState<string | undefined>(undefined);
 
+    const { updateBooking } = useBedOccupancyDashboard();
+
     const handleSubmitForm = async (form: any) => {
         // TODO: integrate updateBooking when ready
-        // setSaving(true);
-        // setFormError(undefined);
-        // try {
-        //   await updateBooking(editBed.bookingId, form);
-        //   setEditBed(null);
-        //   setEditRoom(null);
-        //   fetchOccupancy();
-        // } catch (err: any) {
-        //   setFormError(err?.response?.data?.message || "Failed to update bed");
-        // } finally {
-        //   setSaving(false);
-        // }
+        setSaving(true);
+        setFormError(undefined);
+        try {
+          await updateBooking(editBed.bookingId, form);
+          setEditBed(null);
+          setEditRoom(null);
+          fetchOccupancy();
+        } catch (err: any) {
+          setFormError(err?.response?.data?.message || "Failed to update bed");
+        } finally {
+          setSaving(false);
+        }
     };
 
     if (loading || enumsLoading) return <div>Loading...</div>;
