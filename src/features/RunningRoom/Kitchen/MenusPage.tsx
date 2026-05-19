@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 import MenuFormDialog from "./MenuFormDialog.tsx";
 import MenuItemFormDialog from "./MenuItemFormDialog.tsx";
 import { MdSkipPrevious, MdSkipNext, MdContentCopy } from "react-icons/md";
+import { LuClipboardCopy } from "react-icons/lu";
 
 
 import isoWeek from "dayjs/plugin/isoWeek";
@@ -146,6 +147,26 @@ export default function MenusPage() {
     }
   };
 
+  const copyPreviousDayMenuToSelectedDay = async () => {
+    if (window.confirm("Are you sure you want to copy the previous day's menu to this day? The current day's menu will be overwritten!")) {
+      try {
+        const sourceDate = selectedDate.subtract(1, "day").format("YYYY-MM-DD");
+        const targetDate = selectedDate.format("YYYY-MM-DD");
+
+        const prevMenu = await service.fetchDaily(sourceDate);
+        if (!prevMenu) {
+          setError("No menu found for the previous day to copy.");
+          return;
+        }
+
+        await service.copyDailyMenu(sourceDate, targetDate);
+        await fetchMenus();
+      } catch (err: any) {
+        setError(err?.response?.data?.message || "Failed to copy previous day's menu");
+      }
+    }
+  };
+
   // Fetch menus when view or date changes
   useEffect(() => {
     fetchMenus();
@@ -231,7 +252,38 @@ export default function MenusPage() {
         </label>
       </div>
 
+
+            
       <div className="flex justify-center items-center gap-4 mb-4">
+
+      {view === "daily" && (
+         <div className="w-32 flex justify-end">
+              <div className="relative group">
+                <button
+                  className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition"
+                  onClick={copyPreviousDayMenuToSelectedDay}
+                  aria-label="Copy from Previous Day"
+                >
+                  <LuClipboardCopy className="w-5 h-5 scale-x-[-1]" />
+                </button>
+                <span className="absolute left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-gray-800 text-white text-xs opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-10">
+                  Copy from Previous Day
+                </span>
+              </div>
+          </div>
+      )}
+
+        {view === "weekly"  && (
+          <div className="w-32 flex ">
+            <div className="relative group">
+             
+              <span className="absolute left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-gray-400 text-white text-xs opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-10">
+                Copy to Current Week
+              </span>
+            </div>
+          </div>
+        )}
+
         <button
           className="p-2 rounded hover:bg-gray-200"
           onClick={() => setselectedDate(d => view === "weekly" ? d.subtract(1, "week") : d.subtract(1, "day"))}
@@ -288,19 +340,26 @@ export default function MenusPage() {
           </div>
         )}
 
-        {view === "daily" && !selectedDate.isSame(dayjs(), "day") && menus.length > 0 && (
-          <div className="w-32 flex justify-end">
-            <div className="relative group">
-              <button
-                className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition"
-                onClick={copyThisMenuToCurrentDay}
-                aria-label="Copy to Today"
-              >
-                <MdContentCopy className="w-4 h-4" />
-              </button>
-              <span className="absolute left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-gray-800 text-white text-xs opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-10">
-                Copy to Today
-              </span>
+        {view === "daily" && menus.length > 0 && (
+          <div className="flex items-center gap-2">
+            <div className="w-32 flex justify-left">
+              <div className="relative group">
+                <button
+                  className={
+                    "bg-blue-600 text-white p-2 rounded transition " +
+                    (selectedDate.isSame(dayjs(), "day") ? "opacity-50 cursor-not-allowed hover:bg-blue-600" : "hover:bg-blue-700")
+                  }
+                  onClick={copyThisMenuToCurrentDay}
+                  aria-label="Copy to Today"
+                  disabled={selectedDate.isSame(dayjs(), "day")}
+                  aria-disabled={selectedDate.isSame(dayjs(), "day")}
+                >
+                  <MdContentCopy className="w-4 h-4" />
+                </button>
+                <span className="absolute left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-gray-800 text-white text-xs opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-10">
+                  Copy to Today
+                </span>
+              </div>
             </div>
           </div>
         )}
